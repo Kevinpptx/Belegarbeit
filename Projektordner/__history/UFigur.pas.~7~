@@ -1,0 +1,25 @@
+unit UFigur;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+
+type
+  TFigur = class
+  private
+
+    istWeiss : boolean;
+    //legaleZuege : array of
+
+  public
+
+  end;
+
+  // TODO: TShape Arrays auf TField ändern und dann Klassen für die Sachen
+
+implementation
+
+end.
+
