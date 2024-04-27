@@ -104,6 +104,7 @@
         </DCCReference>
         <DCCReference Include="UField.pas"/>
         <DCCReference Include="UFigur.pas"/>
+        <DCCReference Include="USpringer.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

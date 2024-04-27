@@ -1,0 +1,53 @@
+unit UFigur;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+
+// wird benötigt, um eine zweidimensionale Array als Rückgabetyp einer
+// Funktion zu verwenden
+type
+  TZweiDimensionaleArray = array[1..8, 1..8] of Integer;
+
+type
+  TFigur = class
+
+  private
+    istWeiss : boolean;
+    legaleZuege : TZweiDimensionaleArray; // gibt die Indexes der legalen Zuege in der fields2D Array zurück
+  public
+    procedure ZuegeBerechnen();
+    //function GetZuege() : TArray<TArray<Integer>>;
+    //function GetZuege() : array[1..8] of Integer;
+    function GetZuege() : TZweiDimensionaleArray;
+    constructor Create();
+  end;
+
+implementation
+
+constructor TFigur.Create;
+begin
+
+end;
+
+function TFigur.GetZuege: TZweiDimensionaleArray;
+begin
+  ZuegeBerechnen();
+  result := legaleZuege;
+end;
+
+procedure TFigur.ZuegeBerechnen();
+var i, j : integer;
+begin
+
+  // kreiert Testdaten, wird im regulären Programmbetrieb
+  // nicht aufgerufen, da Methode in den jeweiligen Kindern überschrieben wird
+  for i := 1 to 8 do
+    for j := 1 to 8 do
+      legaleZuege[i][j] := i * j;
+end;
+
+end.
+

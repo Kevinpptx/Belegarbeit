@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   UMain in 'UMain.pas' {Form1},
   UField in 'UField.pas',
-  UFigur in 'UFigur.pas';
+  UFigur in 'UFigur.pas',
+  USpringer in 'USpringer.pas';
 
 {$R *.res}
 

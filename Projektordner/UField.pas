@@ -31,12 +31,12 @@ end;
 procedure TField.FieldMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-
+  {
   ShowName();
-
+   }
 end;
 
-procedure TField.ShowName;
+procedure TField.ShowName();
 begin
 
   ShowMessage(Self.Name);

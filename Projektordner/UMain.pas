@@ -4,12 +4,14 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
 
 type
   TForm1 = class(TForm)
+    Image1: TImage;
     procedure FormActivate(Sender: TObject);
     procedure InitializeFields();
+    procedure Image1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -34,22 +36,6 @@ var
   letter : char;
   number : integer;
 
-  type
-    TSpringer = class
-      public
-        function ZuegeBerechnen() : integer;
-        //constructor Create(); override;
-  end;
-
-function TSpringer.ZuegeBerechnen() : integer;
-begin
-
-  var baum : integer;
-  baum := 1;
-
-  Result := baum;
-end;
-
 procedure TForm1.FormActivate(Sender: TObject);
 begin
 
@@ -62,6 +48,30 @@ end;
 // die ZügeBerechnen Methode wird immer überschrieben
 
 
+procedure TForm1.Image1Click(Sender: TObject);
+var b : TBitmap;
+    pxc, tatfarb : TColor;
+    hxc : string;
+begin
+  b := TBitmap.Create();
+  b.LoadFromFile('Koenig_weiss.bmp');
+  b.TransparentColor := $FE5334;
+  b.Transparent := true;
+  Image1.Picture.Graphic := b;
+
+  //tatfarb := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
+  //b.TransparentColor := tatfarb;
+
+  // folgendes wird nicht ausgeführt, was keinen Sinn ergibt, weil....
+  if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $FE5334) then ShowMessage('toll');
+
+
+  pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
+  hxc := IntToHex(ColorToRGB(pxc), 6);
+  ShowMessage(hxc);
+  // ...das hier #5334FE (hex) zurückgibt, was ja $FE5334 (delphi) ist
+end;
+
 procedure TForm1.InitializeFields();
 var
   i, offsetLeft, offsetTop, fieldSize, marginLeft, marginTop, row, col, row2D, col2D: Integer;
@@ -69,7 +79,7 @@ begin
 
   offsetLeft := 0;
   offsetTop := 0;
-  fieldSize := 200;
+  fieldSize := 100;
   marginLeft:= 200;
   marginTop := 100;
   letter := 'a';
@@ -154,7 +164,6 @@ begin
   for i := 1 to 64 do
   begin
 
-
     if (col2D > 8) then
     begin
 
@@ -167,18 +176,16 @@ begin
 
     Inc(col2D);
 
-       // 2D Array dies
-       // das Ananas
-   // fields2D[row2D, col2D];
-
   end;
 
   Sleep(1000);
 
 end;
 
-
 //TODO: Methoden für die einzelnen legalen Züge berechnen erstellen
 // die legalen Züge auch zwischenspeichern
+
+//Shape1.BringToFront();
+//Shape1.SendToBack();
 
 end.
