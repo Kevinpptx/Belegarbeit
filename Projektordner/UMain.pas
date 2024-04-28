@@ -43,7 +43,7 @@ var
     Stream: TMemoryStream;
     Image: TPngImage;
 begin
-  Stream := TMemoryStream.Create;
+  {Stream := TMemoryStream.Create;
   try
     // PNG-Bild erhalten, aus Datei oder anderem laden...
     // Beispiel: Stream.LoadFromFile('c:\\file.png');
@@ -60,7 +60,10 @@ begin
     end;
   finally
     Stream.Free;
-  end;
+  end;    }
+
+  Image1.Picture.LoadFromFile('kw.png');
+  Image1.BringToFront();
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
