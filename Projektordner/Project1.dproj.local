@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.234,=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.131,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UField.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.995,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UMain.dfm=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.744,=C:\GitHub\Belegarbeit\Projektordner\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.495,C:\GitHub\Belegarbeit\Projektordner\Unit1.pas=C:\GitHub\Belegarbeit\Projektordner\USpringer.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.995,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UMain.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.779,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Project1.dproj=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Project1.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.995,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.dfm=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UMain.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.556,=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.676,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UFigur.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.131,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UField.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.676,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UFigur.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.499,=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.995,C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\UMain.pas</Transaction>
-    <Transaction>2024.04.27 18:57:58.744,=C:\GitHub\Belegarbeit\Projektordner\Unit1.pas</Transaction>
-    <Transaction>2024.04.27 18:58:58.495,C:\GitHub\Belegarbeit\Projektordner\USpringer.pas=C:\GitHub\Belegarbeit\Projektordner\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.234,=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.556,=C:\Users\kb\Documents\Klasse 12\Belegarbeit\Projektordner\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

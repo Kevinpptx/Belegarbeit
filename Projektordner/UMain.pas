@@ -4,14 +4,16 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, pngimage;
 
 type
   TForm1 = class(TForm)
     Image1: TImage;
+    Button1: TButton;
     procedure FormActivate(Sender: TObject);
     procedure InitializeFields();
     procedure Image1Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -29,12 +31,37 @@ uses UField;
 
 var
   fields : array[1..64] of TField;
-  //[reihe 1-8] [spalte a-h (a = 1 usw.)]
+  //[reihe 1-8] [spalte a-h] (also oben links ist [1, 1] und unten rechts  [8, 8])
   fields2D : array[1..8, 1..8] of TField;
   field : TField;
   switch : boolean;
   letter : char;
   number : integer;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+    Stream: TMemoryStream;
+    Image: TPngImage;
+begin
+  Stream := TMemoryStream.Create;
+  try
+    // PNG-Bild erhalten, aus Datei oder anderem laden...
+    // Beispiel: Stream.LoadFromFile('c:\\file.png');
+    Stream.LoadFromFile('kw.png');
+    Stream.Position := 0;
+
+    Image := TPngImage.Create;
+    try
+      Image.LoadFromStream(Stream);
+      Image1.Picture.Graphic := Image;
+      Image1.BringToFront();
+    finally
+      Image.Free;
+    end;
+  finally
+    Stream.Free;
+  end;
+end;
 
 procedure TForm1.FormActivate(Sender: TObject);
 begin
@@ -52,25 +79,70 @@ procedure TForm1.Image1Click(Sender: TObject);
 var b : TBitmap;
     pxc, tatfarb : TColor;
     hxc : string;
+    Stream: TMemoryStream;
+    Image: TPngImage;
 begin
-  b := TBitmap.Create();
+  {b := TBitmap.Create();
   b.LoadFromFile('Koenig_weiss.bmp');
   b.TransparentColor := $FE5334;
   b.Transparent := true;
-  Image1.Picture.Graphic := b;
+  Image1.Picture.Graphic := b;}
+//  b := TBitmap.Create();
+//  try
+//    b.Transparent := true;
+//    b.TransparentColor := $005334FE;
+//    b.LoadFromFile('Koenig_weiss.bmp');
+//    Image1.Picture.Graphic := b;
+//    Image1.Transparent := True;
+//    if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $5334FE) then ShowMessage('toll'); // kommt!
+//
+//
+//    pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
+//    hxc := IntToHex(ColorToRGB(pxc), 6);
+//    ShowMessage(hxc); // zeigt 5334FE
+//  finally
+//    b.Free;
+//  end;
 
-  //tatfarb := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
-  //b.TransparentColor := tatfarb;
+//  Stream := TMemoryStream.Create;
+//  try
+//    // PNG-Bild erhalten, aus Datei oder anderem laden...
+//    // Beispiel: Stream.LoadFromFile('c:\\file.png');
+//    Stream.LoadFromFile('kw.png');
+//    Stream.Position := 0;
+//
+//    Image := TPngImage.Create;
+//    try
+//      Image.LoadFromStream(Stream);
+//      Image1.Picture.Graphic := Image;
+//    finally
+//      Image.Free;
+//    end;
+//  finally
+//    Stream.Free;
+//  end;
 
-  // folgendes wird nicht ausgeführt, was keinen Sinn ergibt, weil....
-  if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $FE5334) then ShowMessage('toll');
-
-
-  pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
-  hxc := IntToHex(ColorToRGB(pxc), 6);
-  ShowMessage(hxc);
-  // ...das hier #5334FE (hex) zurückgibt, was ja $FE5334 (delphi) ist
+  {try
+  Image1.Picture.LoadFromFile('kw.png');
+except
+  on E: Exception do
+    ShowMessage('Fehler beim Laden des Bildes: ' + E.Message); }
 end;
+
+
+
+//  //tatfarb := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
+//  //b.TransparentColor := tatfarb;
+//
+//  // folgendes wird nicht ausgeführt, was keinen Sinn ergibt, weil....
+//  if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $FE5334) then ShowMessage('toll');
+//
+//
+//  pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
+//  hxc := IntToHex(ColorToRGB(pxc), 6);
+//  ShowMessage(hxc);
+//  // ...das hier #5334FE (hex) zurückgibt, was ja $FE5334 (delphi) ist
+//end;
 
 procedure TForm1.InitializeFields();
 var

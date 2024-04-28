@@ -31,9 +31,9 @@ end;
 procedure TField.FieldMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  {
-  ShowName();
-   }
+
+  //ShowName();
+
 end;
 
 procedure TField.ShowName();
