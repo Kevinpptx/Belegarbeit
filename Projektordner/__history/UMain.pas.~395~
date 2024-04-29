@@ -26,7 +26,7 @@ implementation
 
 {$R *.dfm}
 
-uses UField, USpringer;
+uses UField, USpringer, UFigur; // UFigur wird fuer TZweiDimensionaleArray gebr.
 
 var
   fields : array[1..64] of TField;
@@ -57,6 +57,7 @@ end;
 procedure TForm1.InitializeFields();
 var
   i, offsetLeft, offsetTop, fieldSize, marginLeft, marginTop, row, col, row2D, col2D: Integer;
+  lz : TZweiDimensionaleArray;
 begin
 
   offsetLeft := 0;
@@ -161,7 +162,8 @@ begin
   end;
 
   var test : TSpringer;
-  test := Create(
+  test := TSpringer.Create(true, 5, 5);
+  lz := test.GetZuege();
 
   Sleep(1000);
 

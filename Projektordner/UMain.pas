@@ -175,4 +175,6 @@ end;
 //Shape1.BringToFront();
 //Shape1.SendToBack();
 
+//ACHTUNG: WENN DAS SPIEL ENDET ODER NEU STARTET o.ae. DANN IMMER x.Free()!!!
+
 end.
