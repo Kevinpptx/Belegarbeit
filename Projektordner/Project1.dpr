@@ -5,7 +5,8 @@ uses
   UMain in 'UMain.pas' {Form1},
   UField in 'UField.pas',
   UFigur in 'UFigur.pas',
-  USpringer in 'USpringer.pas';
+  USpringer in 'USpringer.pas',
+  UTurm in 'UTurm.pas';
 
 {$R *.res}
 

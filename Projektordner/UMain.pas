@@ -26,7 +26,7 @@ implementation
 
 {$R *.dfm}
 
-uses UField, USpringer, UFigur; // UFigur wird fuer TZweiDimensionaleArray gebr.
+uses UField, USpringer, UFigur, UTurm; // UFigur wird fuer TZweiDimensionaleArray gebr.
 
 var
   fields : array[1..64] of TField;
@@ -161,9 +161,13 @@ begin
 
   end;
 
-  var test : TSpringer;
-  test := TSpringer.Create(true, 5, 5);
-  lz := test.GetZuege();
+  var test1 : TSpringer;
+  test1 := TSpringer.Create(true, 5, 5);
+  lz := test1.GetZuege();
+
+  var test2 : TTurm;
+  test2 := TTurm.Create(true, 5, 5);
+  lz := test2.GetZuege();
 
   Sleep(1000);
 
