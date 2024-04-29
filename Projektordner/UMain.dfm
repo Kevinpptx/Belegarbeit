@@ -14,18 +14,17 @@ object Form1: TForm1
   TextHeight = 15
   object Image1: TImage
     Left = 363
-    Top = 576
-    Width = 105
-    Height = 105
+    Top = 224
+    Width = 518
+    Height = 457
     Stretch = True
     Transparent = True
-    OnClick = Image1Click
   end
   object Button1: TButton
-    Left = 1648
-    Top = 672
-    Width = 75
-    Height = 25
+    Left = 1040
+    Top = 48
+    Width = 259
+    Height = 257
     Caption = 'Button1'
     TabOrder = 0
     OnClick = Button1Click

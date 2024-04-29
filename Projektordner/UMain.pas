@@ -12,7 +12,6 @@ type
     Button1: TButton;
     procedure FormActivate(Sender: TObject);
     procedure InitializeFields();
-    procedure Image1Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
@@ -27,7 +26,7 @@ implementation
 
 {$R *.dfm}
 
-uses UField;
+uses UField, USpringer, UFigur; // UFigur wird fuer TZweiDimensionaleArray gebr.
 
 var
   fields : array[1..64] of TField;
@@ -43,25 +42,6 @@ var
     Stream: TMemoryStream;
     Image: TPngImage;
 begin
-  {Stream := TMemoryStream.Create;
-  try
-    // PNG-Bild erhalten, aus Datei oder anderem laden...
-    // Beispiel: Stream.LoadFromFile('c:\\file.png');
-    Stream.LoadFromFile('kw.png');
-    Stream.Position := 0;
-
-    Image := TPngImage.Create;
-    try
-      Image.LoadFromStream(Stream);
-      Image1.Picture.Graphic := Image;
-      Image1.BringToFront();
-    finally
-      Image.Free;
-    end;
-  finally
-    Stream.Free;
-  end;    }
-
   Image1.Picture.LoadFromFile('kw.png');
   Image1.BringToFront();
 end;
@@ -73,83 +53,11 @@ begin
 
 end;
 
-// Ich erstelle eine Klasse Figur, von der alle einzelnen FIgurenklassen erben
-// die Standardsachen sind ja gleich zwischen Figuren
-// die ZügeBerechnen Methode wird immer überschrieben
-
-
-procedure TForm1.Image1Click(Sender: TObject);
-var b : TBitmap;
-    pxc, tatfarb : TColor;
-    hxc : string;
-    Stream: TMemoryStream;
-    Image: TPngImage;
-begin
-  {b := TBitmap.Create();
-  b.LoadFromFile('Koenig_weiss.bmp');
-  b.TransparentColor := $FE5334;
-  b.Transparent := true;
-  Image1.Picture.Graphic := b;}
-//  b := TBitmap.Create();
-//  try
-//    b.Transparent := true;
-//    b.TransparentColor := $005334FE;
-//    b.LoadFromFile('Koenig_weiss.bmp');
-//    Image1.Picture.Graphic := b;
-//    Image1.Transparent := True;
-//    if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $5334FE) then ShowMessage('toll'); // kommt!
-//
-//
-//    pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
-//    hxc := IntToHex(ColorToRGB(pxc), 6);
-//    ShowMessage(hxc); // zeigt 5334FE
-//  finally
-//    b.Free;
-//  end;
-
-//  Stream := TMemoryStream.Create;
-//  try
-//    // PNG-Bild erhalten, aus Datei oder anderem laden...
-//    // Beispiel: Stream.LoadFromFile('c:\\file.png');
-//    Stream.LoadFromFile('kw.png');
-//    Stream.Position := 0;
-//
-//    Image := TPngImage.Create;
-//    try
-//      Image.LoadFromStream(Stream);
-//      Image1.Picture.Graphic := Image;
-//    finally
-//      Image.Free;
-//    end;
-//  finally
-//    Stream.Free;
-//  end;
-
-  {try
-  Image1.Picture.LoadFromFile('kw.png');
-except
-  on E: Exception do
-    ShowMessage('Fehler beim Laden des Bildes: ' + E.Message); }
-end;
-
-
-
-//  //tatfarb := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
-//  //b.TransparentColor := tatfarb;
-//
-//  // folgendes wird nicht ausgeführt, was keinen Sinn ergibt, weil....
-//  if (Image1.Picture.Bitmap.Canvas.Pixels[0, 0] = $FE5334) then ShowMessage('toll');
-//
-//
-//  pxc := Image1.Picture.Bitmap.Canvas.Pixels[0, 0];
-//  hxc := IntToHex(ColorToRGB(pxc), 6);
-//  ShowMessage(hxc);
-//  // ...das hier #5334FE (hex) zurückgibt, was ja $FE5334 (delphi) ist
-//end;
 
 procedure TForm1.InitializeFields();
 var
   i, offsetLeft, offsetTop, fieldSize, marginLeft, marginTop, row, col, row2D, col2D: Integer;
+  lz : TZweiDimensionaleArray;
 begin
 
   offsetLeft := 0;
@@ -252,6 +160,10 @@ begin
     Inc(col2D);
 
   end;
+
+  var test : TSpringer;
+  test := TSpringer.Create(true, 5, 5);
+  lz := test.GetZuege();
 
   Sleep(1000);
 
