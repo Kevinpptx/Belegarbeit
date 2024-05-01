@@ -14,6 +14,7 @@ type
 type
   TFigur = class
   protected
+    pfad : string;
     istWeiss : boolean;
     legaleZuege : TZweiDimensionaleArray; // [MoeglichkeitNr][1 = X / 2 = Y (in fields2D)]
     aktuelleKoordinateX : integer; // gibt die Koordinate X der aktuellen Position in der fields2D Array zurück
@@ -32,6 +33,7 @@ begin
   istWeiss := p_istWeiss;
   aktuelleKoordinateX := p_aktuelleKoordinateX;
   aktuelleKoordinateY := p_aktuelleKoordinateY;
+  pfad := '';
 
 end;
 

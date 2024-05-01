@@ -106,6 +106,10 @@
         <DCCReference Include="UFigur.pas"/>
         <DCCReference Include="USpringer.pas"/>
         <DCCReference Include="UTurm.pas"/>
+        <DCCReference Include="ULaeufer.pas"/>
+        <DCCReference Include="UDame.pas"/>
+        <DCCReference Include="UKoenig.pas"/>
+        <DCCReference Include="UBauer.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

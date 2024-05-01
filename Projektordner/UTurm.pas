@@ -15,21 +15,22 @@ type
 
 implementation
 
-{ TSpringer }
+{ TLaeufer }
 
-// gibt eine Liste der legalen Springerzuege im fields2D Array zurück
+// gibt eine Liste der legalen Turmzuege im fields2D Array zurueck
 constructor TTurm.Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
 begin
+
   inherited Create(p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
+
+  if (p_istWeiss) then pfad := 'turm-w.png' else pfad := 'turm-s.png';
 end;
 
 procedure TTurm.ZuegeBerechnen();
 var
-  moeglichkeit : array[1..2] of integer;
   moeglichkeitenTheoretisch : array[1..64, 1..2] of integer;
   moeglichkeitenTatsaechlich : TZweiDimensionaleArray;
-  i, hinzugefuegteZuege, moeglichkeitNummer: Integer;
-  j: Integer;
+  i, j, hinzugefuegteZuege, moeglichkeitNummer: Integer;
 begin
 
   {
@@ -46,9 +47,11 @@ begin
 
   moeglichkeitNummer := 1;
 
+  // Laufrichtungen
   for i := 1 to 4 do
   begin
 
+    // Moeglichkeiten pro Richtung
     for j := 1 to 7 do
     begin
 
@@ -132,7 +135,7 @@ begin
 
     end;
 
-    // und abschliessend alle nicht beutzten Felder der Array wieder mit 0, 0 füllen
+    // und abschliessend alle nicht benutzten Felder der Array wieder mit 0, 0 füllen
     for i := hinzugefuegteZuege + 1 to 64 do
     begin
 

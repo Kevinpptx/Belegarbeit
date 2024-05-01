@@ -6,7 +6,11 @@ uses
   UField in 'UField.pas',
   UFigur in 'UFigur.pas',
   USpringer in 'USpringer.pas',
-  UTurm in 'UTurm.pas';
+  UTurm in 'UTurm.pas',
+  ULaeufer in 'ULaeufer.pas',
+  UDame in 'UDame.pas',
+  UKoenig in 'UKoenig.pas',
+  UBauer in 'UBauer.pas';
 
 {$R *.res}
 
