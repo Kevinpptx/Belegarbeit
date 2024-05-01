@@ -10,22 +10,24 @@ type
   TDame = class(TFigur)
   public
     procedure ZuegeBerechnen(); override;
-    constructor Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+    constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   end;
 
 implementation
 
 { TDame }
 
-// gibt eine Liste der legalen Damenzuege im fields2D Array zurück
-constructor TDame.Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+constructor TDame.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
 begin
 
-  inherited Create(p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
+  inherited Create(p_Form, p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
 
   if (p_istWeiss) then pfad := 'dame-w.png' else pfad := 'dame-s.png';
+  BildLaden();
+
 end;
 
+// gibt eine Liste der legalen Damenzuege im fields2D Array zurück
 procedure TDame.ZuegeBerechnen();
 var
   moeglichkeitenTheoretisch : array[1..64, 1..2] of integer;
@@ -70,6 +72,8 @@ begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY;
 
+            Inc(moeglichkeitNummer);
+
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j;
           end;
@@ -77,6 +81,8 @@ begin
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY;
+
+            Inc(moeglichkeitNummer);
 
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;
@@ -86,6 +92,8 @@ begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j;
 
+            Inc(moeglichkeitNummer);
+
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j;
           end;
@@ -93,6 +101,8 @@ begin
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;
+
+            Inc(moeglichkeitNummer);
 
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;

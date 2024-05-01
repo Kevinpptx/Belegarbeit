@@ -12,7 +12,7 @@ type
     procedure ZuegeBerechnen(); override;
     procedure SetImSchach(p_stehtImSchach : boolean);
     function GetImSchach() : boolean;
-    constructor Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+    constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   private
     stehtImSchach : boolean;
   end;
@@ -21,18 +21,19 @@ implementation
 
 { TKoenig }
 
-// gibt eine Liste der legalen Koenigszuege im fields2D Array zurueck
-constructor TKoenig.Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+constructor TKoenig.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
 begin
 
-  inherited Create(p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
+  inherited Create(p_Form, p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
 
   if (p_istWeiss) then pfad := 'koenig-w.png' else pfad := 'koenig-s.png';
+  BildLaden();
 
   stehtImSchach := false;
+
 end;
 
-function TKoenig.GetImSchach: boolean;
+function TKoenig.GetImSchach(): boolean;
 begin
   result := stehtImSchach;
 end;
@@ -42,6 +43,7 @@ begin
   stehtImSchach := p_stehtImSchach;
 end;
 
+// gibt eine Liste der legalen Koenigszuege im fields2D Array zurueck
 procedure TKoenig.ZuegeBerechnen();
 var
   moeglichkeitenTheoretisch : array[1..64, 1..2] of integer;
@@ -90,16 +92,6 @@ begin
 
     moeglichkeitenTheoretisch[8, 1] := aktuelleKoordinateX;
     moeglichkeitenTheoretisch[8, 2] := aktuelleKoordinateY - 1;
-
-    // Rest der Array mit 0, 0 fuellen, damit der Hauptcode, der immer durch
-    // alle 64 iteriert, weiss, dass da nichts mehr kommt
-    for i := 9 to 64 do
-    begin
-
-      moeglichkeitenTheoretisch[i, 1] := 0;
-      moeglichkeitenTheoretisch[i, 2] := 0;
-
-    end;
 
     // Manche Moeglichkeiten sind noch illegale Zuege, das Brett ist ja nicht
     // unbegrenzt, also werden jetzt Koordinaten ueber 8 und kleiner 0

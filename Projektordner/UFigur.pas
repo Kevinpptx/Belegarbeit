@@ -12,7 +12,7 @@ type
   TZweiDimensionaleArray = array[1..64, 1..2] of Integer;
 
 type
-  TFigur = class
+  TFigur = class(TImage)
   protected
     pfad : string;
     istWeiss : boolean;
@@ -20,21 +20,47 @@ type
     aktuelleKoordinateX : integer; // gibt die Koordinate X der aktuellen Position in der fields2D Array zurück
     aktuelleKoordinateY : integer; // gibt die Koordinate Y der aktuellen Position in der fields2D Array zurück
     procedure ZuegeBerechnen(); virtual;
+    procedure BildLaden();
   public
+    function GetAktuelleKoordinateX() : integer;
+    function GetAktuelleKoordinateY() : integer;
     function GetZuege() : TZweiDimensionaleArray;
-    constructor Create(p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
+    constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   end;
 
 implementation
 
-constructor TFigur.Create(p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
+procedure TFigur.BildLaden();
 begin
+
+  Picture.LoadFromFile(pfad);
+  Transparent := true;
+  Stretch := true;
+  BringToFront();
+
+end;
+
+constructor TFigur.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
+begin
+
+  inherited Create(p_Form);
 
   istWeiss := p_istWeiss;
   aktuelleKoordinateX := p_aktuelleKoordinateX;
   aktuelleKoordinateY := p_aktuelleKoordinateY;
   pfad := '';
+  Parent := p_Form;
 
+end;
+
+function TFigur.GetAktuelleKoordinateX(): integer;
+begin
+  result := aktuelleKoordinateX;
+end;
+
+function TFigur.GetAktuelleKoordinateY(): integer;
+begin
+  result := aktuelleKoordinateY;
 end;
 
 function TFigur.GetZuege() : TZweiDimensionaleArray;

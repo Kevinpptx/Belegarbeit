@@ -1,0 +1,15 @@
+- Spielen
+ - Win Conditions 
+  - Matt
+  - Remis (50Z, Patt, Stellungswdh)
+ - Züge
+  - Nicht auf beschuetzte Felder
+  - Nicht durch andere Figuren gehen
+  - Figuren schlagen
+  - En Passant
+  - Promotion
+- Schachcomputer
+
+Am Ende: Sleep entfernen
+
+Züge berechnen procedure private machen 
