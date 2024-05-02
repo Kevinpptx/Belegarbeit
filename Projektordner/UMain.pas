@@ -4,7 +4,10 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, pngimage;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, pngimage, UField;
+
+type
+  TFields2DArrayZumUebergeben = array[1..8, 1..8] of TField;
 
 type
   TFormMain = class(TForm)
@@ -25,7 +28,7 @@ type
   private
     { Private-Deklarationen }
   public
-    { Public-Deklarationen }
+    function GetFields2D() : TFields2DArrayZumUebergeben;
   end;
 
 var
@@ -36,20 +39,40 @@ implementation
 {$R *.dfm}
 
 // UFigur wird fuer TZweiDimensionaleArray gebr.
-uses UField, USpringer, UFigur, UTurm, UBauer, ULaeufer, UDame, UKoenig;
+uses USpringer, UFigur, UTurm, UBauer, ULaeufer, UDame, UKoenig;
 
 var
   fields : array[1..64] of TField;
   //[reihe 1-8] (Y) [spalte a-h] (X) (also oben links ist [1, 1] und unten rechts  [8, 8])
   fields2D : array[1..8, 1..8] of TField;
   field : TField;
-  switch : boolean;
-  letter : char;
+  tauschen : boolean;
+  buchstabe : char;
   number : integer;
+  bauer1w, bauer2w, bauer3w, bauer4w, bauer5w, bauer6w, bauer7w, bauer8w,
+  bauer1s, bauer2s, bauer3s, bauer4s, bauer5s, bauer6s, bauer7s, bauer8s : TBauer;
+  springer1w, springer2w, springer1s, springer2s : TSpringer;
+  laeufer1w, laeufer2w, laeufer1s, laeufer2s : TLaeufer;
+  turm1w, turm2w, turm1s, turm2s : TTurm;
+  damew, dames : TDame;
+  koenigw, koenigs : TKoenig;
+
+function TFormMain.GetFields2D() : TFields2DArrayZumUebergeben;
+var
+  konvertierteArray : TFields2DArrayZumUebergeben;
+  i: Integer;
+  j: Integer;
+begin
+
+  for i := 1 to 8 do
+    for j := 1 to 8 do
+      konvertierteArray[i, j] := fields2D[i, j];
+
+  result := konvertierteArray;
+
+end;
 
 procedure TFormMain.btDemonstrationClick(Sender: TObject);
-var
-    im1, im2, im3, im4, im5, im6, im7, im8 : TImage;
 begin
   SpielZuruecksetzen();
 end;
@@ -64,131 +87,154 @@ end;
 
 procedure TFormMain.SpielZuruecksetzen;
 var
-  bauer1w, bauer2w, bauer3w, bauer4w, bauer5w, bauer6w, bauer7w, bauer8w,
-  bauer1s, bauer2s, bauer3s, bauer4s, bauer5s, bauer6s, bauer7s, bauer8s : TBauer;
-  springer1w, springer2w, springer1s, springer2 : TSpringer;
-  laeufer1w, laeufer2w, laeufer1s, laeufer2s : TLaeufer;
-  turm1w, turm2w, turm1s, turm2s : TTurm;
-  damew, dames : TDame;
-  koenigw, koenigs : TKoenig;
   i: integer;
 begin
 
   // Hinweis: Bei fields2D gilt [Y-Koordinate] [X-Koordinate] also Y kommt zuerst bei Koordinatenangaben
 
-  bauer1w := TBauer.Create(FormMain, true, 1, 7);  // fehlerhaft
+  // Bauern weiss
+  bauer1w := TBauer.Create(FormMain, true, 1, 7);
   bauer1w.Left := fields2D[7, 1].Left;
   bauer1w.Top := fields2D[7, 1].Top;
 
-  turm1w := TTurm.Create(FormMain, true, 1, 8);   // fehlerhaft
+  bauer2w := TBauer.Create(FormMain, true, 2, 7);
+  bauer2w.Left := fields2D[7, 2].Left;
+  bauer2w.Top := fields2D[7, 2].Top;
+
+  bauer3w := TBauer.Create(FormMain, true, 3, 7);
+  bauer3w.Left := fields2D[7, 3].Left;
+  bauer3w.Top := fields2D[7, 3].Top;
+
+  bauer4w := TBauer.Create(FormMain, true, 4, 7);
+  bauer4w.Left := fields2D[7, 4].Left;
+  bauer4w.Top := fields2D[7, 4].Top;
+
+  bauer5w := TBauer.Create(FormMain, true, 5, 7);
+  bauer5w.Left := fields2D[7, 5].Left;
+  bauer5w.Top := fields2D[7, 5].Top;
+
+  bauer6w := TBauer.Create(FormMain, true, 6, 7);
+  bauer6w.Left := fields2D[7, 6].Left;
+  bauer6w.Top := fields2D[7, 6].Top;
+
+  bauer7w := TBauer.Create(FormMain, true, 7, 7);
+  bauer7w.Left := fields2D[7, 7].Left;
+  bauer7w.Top := fields2D[7, 7].Top;
+
+  bauer8w := TBauer.Create(FormMain, true, 8, 7);
+  bauer8w.Left := fields2D[7, 8].Left;
+  bauer8w.Top := fields2D[7, 8].Top;
+
+  // Bauern schwarz
+  bauer1s := TBauer.Create(FormMain, false, 1, 2);
+  bauer1s.Left := fields2D[2, 1].Left;
+  bauer1s.Top := fields2D[2, 1].Top;
+
+  bauer2s := TBauer.Create(FormMain, false, 2, 2);
+  bauer2s.Left := fields2D[2, 2].Left;
+  bauer2s.Top := fields2D[2, 2].Top;
+
+  bauer3s := TBauer.Create(FormMain, false, 3, 2);
+  bauer3s.Left := fields2D[2, 3].Left;
+  bauer3s.Top := fields2D[2, 3].Top;
+
+  bauer4s := TBauer.Create(FormMain, false, 4, 2);
+  bauer4s.Left := fields2D[2, 4].Left;
+  bauer4s.Top := fields2D[2, 4].Top;
+
+  bauer5s := TBauer.Create(FormMain, false, 5, 2);
+  bauer5s.Left := fields2D[2, 5].Left;
+  bauer5s.Top := fields2D[2, 5].Top;
+
+  bauer6s := TBauer.Create(FormMain, false, 6, 2);
+  bauer6s.Left := fields2D[2, 6].Left;
+  bauer6s.Top := fields2D[2, 6].Top;
+
+  bauer7s := TBauer.Create(FormMain, false, 7, 2);
+  bauer7s.Left := fields2D[2, 7].Left;
+  bauer7s.Top := fields2D[2, 7].Top;
+
+  bauer8s := TBauer.Create(FormMain, false, 8, 2);
+  bauer8s.Left := fields2D[2, 8].Left;
+  bauer8s.Top := fields2D[2, 8].Top;
+
+  // Tuerme weiss
+  turm1w := TTurm.Create(FormMain, true, 1, 8);
   turm1w.Left := fields2D[8, 1].Left;
   turm1w.Top := fields2D[8, 1].Top;
 
+  turm2w := TTurm.Create(FormMain, true, 8, 8);
+  turm2w.Left := fields2D[8, 8].Left;
+  turm2w.Top := fields2D[8, 8].Top;
+
+  // Tuerme schwarz
+  turm1s := TTurm.Create(FormMain, false, 1, 1);
+  turm1s.Left := fields2D[1, 1].Left;
+  turm1s.Top := fields2D[1, 1].Top;
+
+  turm2s := TTurm.Create(FormMain, false, 8, 1);
+  turm2s.Left := fields2D[1, 8].Left;
+  turm2s.Top := fields2D[1, 8].Top;
+
+  // Springer weiss
   springer1w := TSpringer.Create(FormMain, true, 2, 8);
   springer1w.Left := fields2D[8, 2].Left;
   springer1w.Top := fields2D[8, 2].Top;
 
-  laeufer1w := TLaeufer.Create(FormMain, true, 4, 4);
-  laeufer1w.Left := fields2D[4, 4].Left;
-  laeufer1w.Top := fields2D[4, 4].Top;
+  springer2w := TSpringer.Create(FormMain, true, 7, 8);
+  springer2w.Left := fields2D[8, 7].Left;
+  springer2w.Top := fields2D[8, 7].Top;
 
-  damew := TDame.Create(FormMain, true, 5, 5);
-  damew.Left := fields2D[5, 5].Left;
-  damew.Top := fields2D[5, 5].Top;
+  // Springer schwarz
+  springer1s := TSpringer.Create(FormMain, false, 2, 1);
+  springer1s.Left := fields2D[1, 2].Left;
+  springer1s.Top := fields2D[1, 2].Top;
 
-  koenigw := TKoenig.Create(FormMain, true, 3, 3);
-  koenigw.Left := fields2D[3, 3].Left;
-  koenigw.Top := fields2D[3, 3].Top;
+  springer2s := TSpringer.Create(FormMain, false, 7, 1);
+  springer2s.Left := fields2D[1, 7].Left;
+  springer2s.Top := fields2D[1, 7].Top;
 
-  // ab hier nur test
+  // Laeufer weiss
+  laeufer1w := TLaeufer.Create(FormMain, true, 3, 8);
+  laeufer1w.Left := fields2D[8, 3].Left;
+  laeufer1w.Top := fields2D[8, 3].Top;
 
-  var test, test2, test3, test4, test5, test6 : TZweiDimensionaleArray;
-  test := bauer1w.GetZuege();
-  test2 := turm1w.GetZuege();
-  test3 := springer1w.GetZuege();
-  test4 := laeufer1w.GetZuege();
-  test5 := damew.GetZuege();
-  test6 := koenigw.GetZuege();
+  laeufer2w := TLaeufer.Create(FormMain, true, 6, 8);
+  laeufer2w.Left := fields2D[8, 6].Left;
+  laeufer2w.Top := fields2D[8, 6].Top;
 
-  for i := 1 to 64 do
-  begin
+  // Laeufer schwarz
+  laeufer1s := TLaeufer.Create(FormMain, false, 3, 1);
+  laeufer1s.Left := fields2D[1, 3].Left;
+  laeufer1s.Top := fields2D[1, 3].Top;
 
-    if (test[i, 1] = 0) and (test[i, 2] = 0) then break;
+  laeufer2s := TLaeufer.Create(FormMain, false, 6, 1);
+  laeufer2s.Left := fields2D[1, 6].Left;
+  laeufer2s.Top := fields2D[1, 6].Top;
 
-    //fields2D[test[i, 2], test[i, 1]].FeldHervorheben();
+  // Damen
+  damew := TDame.Create(FormMain, true, 4, 8);
+  damew.Left := fields2D[8, 4].Left;
+  damew.Top := fields2D[8, 4].Top;
 
-  end;
+  dames := TDame.Create(FormMain, false, 4, 1);
+  dames.Left := fields2D[1, 4].Left;
+  dames.Top := fields2D[1, 4].Top;
 
-  for i := 1 to 64 do
-  begin
+  // Koenige
+  koenigw := TKoenig.Create(FormMain, true, 5, 8);
+  koenigw.Left := fields2D[8, 5].Left;
+  koenigw.Top := fields2D[8, 5].Top;
 
-    if (test2[i, 1] = 0) and (test2[i, 2] = 0) then break;
+  koenigs := TKoenig.Create(FormMain, false, 5, 1);
+  koenigs.Left := fields2D[1, 5].Left;
+  koenigs.Top := fields2D[1, 5].Top;
 
-    //fields2D[test2[i, 2], test2[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test3[i, 1] = 0) and (test3[i, 2] = 0) then break;
-
-    //fields2D[test3[i, 2], test3[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test4[i, 1] = 0) and (test4[i, 2] = 0) then break;
-
-    //fields2D[test4[i, 2], test4[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test5[i, 1] = 0) and (test5[i, 2] = 0) then break;
-
-    //fields2D[test5[i, 2], test5[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test6[i, 1] = 0) and (test6[i, 2] = 0) then break;
-
-    //fields2D[test6[i, 2], test6[i, 1]].FeldHervorheben();
-
-  end;
-
-
-  //fields2D[5, 5].FeldHervorheben();
-
-//  im1.Left := fields2D[7, 1].Left;
-//  im1.Top := fields2D[7, 1].Top;
-//  im2.Left := fields2D[7, 2].Left;
-//  im2.Top := fields2D[7, 2].Top;
-//  im3.Left := fields2D[7, 3].Left;
-//  im3.Top := fields2D[7, 3].Top;
-//  im4.Left := fields2D[7, 4].Left;
-//  im4.Top := fields2D[7, 4].Top;
-//  im5.Left := fields2D[7, 5].Left;
-//  im5.Top := fields2D[7, 5].Top;
-//  im6.Left := fields2D[7, 6].Left;
-//  im6.Top := fields2D[7, 6].Top;
-//  im7.Left := fields2D[7, 7].Left;
-//  im7.Top := fields2D[7, 7].Top;
-//  im8.Left := fields2D[7, 8].Left;
-//  im8.Top := fields2D[7, 8].Top;
 end;
 
 procedure TFormMain.FelderInitialisieren();
 var
   i, offsetLeft, offsetTop, fieldSize, marginLeft, marginTop, row, col, row2D, col2D: Integer;
-  lz : TZweiDimensionaleArray;
 begin
 
   offsetLeft := 0;
@@ -196,7 +242,7 @@ begin
   fieldSize := 100;
   marginLeft:= 200;
   marginTop := 100;
-  letter := 'a';
+  buchstabe := 'a';
   number := 8;
   row := 1;
   col := 1;
@@ -211,16 +257,16 @@ begin
       field.Width := fieldSize;
       field.Left := 0 + offsetLeft + marginLeft;
       field.Top := 0 + offsetTop + marginTop;
-      field.Name := letter + inttostr(number);
+      field.Name := buchstabe + inttostr(number);
   
       fields[i] := field;
 
       // Farbe
-      if (i mod 2 = 0) and not (switch) then
+      if (i mod 2 = 0) and not (tauschen) then
         begin
           fields[i].Brush.Color := clBlack;
         end
-      else if (i mod 2 = 1) and (switch) then
+      else if (i mod 2 = 1) and (tauschen) then
       begin
         fields[i].Brush.Color := clBlack;
       end;
@@ -250,21 +296,21 @@ begin
 
         end;
 
-        if (switch) then switch := false
-        else switch := true;
+        if (tauschen) then tauschen := false
+        else tauschen := true;
       
       end;
 
       case col of
 
-          1: letter := 'a';
-          2: letter := 'b';
-          3: letter := 'c';
-          4: letter := 'd';
-          5: letter := 'e';
-          6: letter := 'f';
-          7: letter := 'g';
-          8: letter := 'h';
+          1: buchstabe := 'a';
+          2: buchstabe := 'b';
+          3: buchstabe := 'c';
+          4: buchstabe := 'd';
+          5: buchstabe := 'e';
+          6: buchstabe := 'f';
+          7: buchstabe := 'g';
+          8: buchstabe := 'h';
 
       end;
       

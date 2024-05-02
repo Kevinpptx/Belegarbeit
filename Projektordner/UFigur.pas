@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, UField, UMain;
 
 // wird benoetigt, um eine zweidimensionale Array als Rückgabetyp einer
 // Funktion zu verwenden
@@ -21,11 +21,16 @@ type
     aktuelleKoordinateY : integer; // gibt die Koordinate Y der aktuellen Position in der fields2D Array zurück
     procedure ZuegeBerechnen(); virtual;
     procedure BildLaden();
+    procedure ZuegeAnzeigen();
+    procedure Click(); override;
   public
     function GetAktuelleKoordinateX() : integer;
     function GetAktuelleKoordinateY() : integer;
     function GetZuege() : TZweiDimensionaleArray;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
+  private
+    class var hervorgehobeneFelder : array[1..27] of TField;
+    class var hervorgehoben : integer;
   end;
 
 implementation
@@ -41,6 +46,8 @@ begin
 end;
 
 constructor TFigur.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
+var
+  i: Integer;
 begin
 
   inherited Create(p_Form);
@@ -50,7 +57,54 @@ begin
   aktuelleKoordinateY := p_aktuelleKoordinateY;
   pfad := '';
   Parent := p_Form;
+  hervorgehoben := 0;
 
+end;
+
+procedure TFigur.ZuegeAnzeigen();
+var
+  i: Integer;
+  felder : TFields2DArrayZumUebergeben;
+begin
+
+  felder := FormMain.GetFields2D();
+  ZuegeBerechnen();
+
+  // vorher hervorgehobene ent-hervorheben
+  if (hervorgehoben <> 0) then
+  begin
+
+    for i := 1 to hervorgehoben do
+    begin
+      hervorgehobeneFelder[i].FeldhervorhebungAufheben();
+      hervorgehobeneFelder[i] := nil;
+    end;
+
+    hervorgehoben := 0;
+
+  end;
+
+
+  // Felder hervorheben
+  for i := 1 to 64 do
+  begin
+
+    if (legaleZuege[i, 1] = 0) or (legaleZuege[i, 2] = 0) then break;
+
+    Inc(hervorgehoben);
+    felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
+    hervorgehobeneFelder[hervorgehoben] := felder[legaleZuege[i, 2], legaleZuege[i, 1]];
+
+  end;
+
+  //felder[1, 1].SetAusgewaehlteFigur(Self);
+
+end;
+
+procedure TFigur.Click();
+begin
+  inherited;
+  ZuegeAnzeigen();
 end;
 
 function TFigur.GetAktuelleKoordinateX(): integer;

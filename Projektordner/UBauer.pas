@@ -39,6 +39,14 @@ begin
 
    Moeglichkeiten Bauernzuege:
 
+   Weiss:
+   X          Y
+   +0         -1
+   +0         -2  (nur wenn noch nicht bewegt)
+   +1         -1  (nur beim Schlagen)
+   -1         -1  (nur beim Schlagen)
+
+   Schwarz:
    X          Y
    +0         +1
    +0         +2  (nur wenn noch nicht bewegt)
@@ -47,25 +55,16 @@ begin
 
   }
 
-    if (istWeiss) then
+    // das muss hier sein sonst kommen ganz komische Sachen raus
+    for i := 1 to 64 do
     begin
+      moeglichkeitenTheoretisch[i, 1] := 0;
+      moeglichkeitenTheoretisch[i, 2] := 0;
+      moeglichkeitenTatsaechlich[i, 1] := 0;
+      moeglichkeitenTatsaechlich[i, 2] := 0;
+    end;
 
-      // Moeglichkeit 1, Koordinate X
-      moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX;
-      // Moeglichkeit 1, Koordinate Y
-      moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 1;
-
-      moeglichkeitenTheoretisch[2, 1] := aktuelleKoordinateX;
-      moeglichkeitenTheoretisch[2, 2] := aktuelleKoordinateY + 2;
-
-      moeglichkeitenTheoretisch[3, 1] := aktuelleKoordinateX + 1;
-      moeglichkeitenTheoretisch[3, 2] := aktuelleKoordinateY + 1;
-
-      moeglichkeitenTheoretisch[4, 1] := aktuelleKoordinateX - 1;
-      moeglichkeitenTheoretisch[4, 2] := aktuelleKoordinateY + 1;
-
-    end
-    else
+    if (istWeiss) then
     begin
 
       // Moeglichkeit 1, Koordinate X
@@ -81,21 +80,25 @@ begin
 
       moeglichkeitenTheoretisch[4, 1] := aktuelleKoordinateX - 1;
       moeglichkeitenTheoretisch[4, 2] := aktuelleKoordinateY - 1;
+
+    end
+    else
+    begin
+
+      // Moeglichkeit 1, Koordinate X
+      moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX;
+      // Moeglichkeit 1, Koordinate Y
+      moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 1;
+
+      moeglichkeitenTheoretisch[2, 1] := aktuelleKoordinateX;
+      moeglichkeitenTheoretisch[2, 2] := aktuelleKoordinateY + 2;
+
+      moeglichkeitenTheoretisch[3, 1] := aktuelleKoordinateX + 1;
+      moeglichkeitenTheoretisch[3, 2] := aktuelleKoordinateY + 1;
+
+      moeglichkeitenTheoretisch[4, 1] := aktuelleKoordinateX - 1;
+      moeglichkeitenTheoretisch[4, 2] := aktuelleKoordinateY + 1;
     end;
-
-    // Moeglichkeit 1, Koordinate X
-    moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX;
-    // Moeglichkeit 1, Koordinate Y
-    moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 1;
-
-    moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX;
-    moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 2;
-
-    moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX + 1;
-    moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 1;
-
-    moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX - 1;
-    moeglichkeitenTheoretisch[1, 2] := aktuelleKoordinateY + 1;
 
     // Manche Moeglichkeiten sind noch illegale Zuege, das Brett ist ja nicht
     // unbegrenzt, also werden jetzt Koordinaten ueber 8 und kleiner 0
@@ -133,15 +136,6 @@ begin
         moeglichkeitenTatsaechlich[hinzugefuegteZuege, 2] := moeglichkeitenTheoretisch[i, 2];
 
       end;
-
-    end;
-
-    // und abschliessend alle nicht benutzten Felder der Array wieder mit 0, 0 füllen
-    for i := hinzugefuegteZuege + 1 to 64 do
-    begin
-
-      moeglichkeitenTatsaechlich[i, 1] := 0;
-      moeglichkeitenTatsaechlich[i, 2] := 0;
 
     end;
 

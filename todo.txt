@@ -3,6 +3,7 @@
   - Matt
   - Remis (50Z, Patt, Stellungswdh)
  - Züge
+  - Hervorheben
   - Nicht auf beschuetzte Felder
   - Nicht durch andere Figuren gehen
   - Figuren schlagen

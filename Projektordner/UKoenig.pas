@@ -51,6 +51,15 @@ var
   i, hinzugefuegteZuege: Integer;
 begin
 
+    // das muss hier sein sonst kommen ganz komische Sachen raus
+    for i := 1 to 64 do
+    begin
+      moeglichkeitenTheoretisch[i, 1] := 0;
+      moeglichkeitenTheoretisch[i, 2] := 0;
+      moeglichkeitenTatsaechlich[i, 1] := 0;
+      moeglichkeitenTatsaechlich[i, 2] := 0;
+    end;
+
   {
 
    Moeglichkeiten Koenigszuege:
