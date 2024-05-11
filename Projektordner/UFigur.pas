@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, UField, UMain;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
 
 // wird benoetigt, um eine zweidimensionale Array als Rückgabetyp einer
 // Funktion zu verwenden
@@ -12,28 +12,35 @@ type
   TZweiDimensionaleArray = array[1..64, 1..2] of Integer;
 
 type
-  TFigur = class(TImage)
+  TFigur = class abstract(TImage)
   protected
     pfad : string;
     istWeiss : boolean;
     legaleZuege : TZweiDimensionaleArray; // [MoeglichkeitNr][1 = X / 2 = Y (in fields2D)]
     aktuelleKoordinateX : integer; // gibt die Koordinate X der aktuellen Position in der fields2D Array zurück
     aktuelleKoordinateY : integer; // gibt die Koordinate Y der aktuellen Position in der fields2D Array zurück
-    procedure ZuegeBerechnen(); virtual;
+    procedure ZuegeBerechnen(); virtual; abstract;
     procedure BildLaden();
     procedure ZuegeAnzeigen();
     procedure Click(); override;
   public
+    procedure SetAktuelleKoordinateX(p_x : integer);
+    procedure SetAktuelleKoordinateY(p_y : integer);
     function GetAktuelleKoordinateX() : integer;
     function GetAktuelleKoordinateY() : integer;
     function GetZuege() : TZweiDimensionaleArray;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   private
-    class var hervorgehobeneFelder : array[1..27] of TField;
+    //class var hervorgehobeneFelder : array[1..27] of TField;
     class var hervorgehoben : integer;
   end;
 
 implementation
+
+uses UMain, UController;
+
+var
+  controller : TController;
 
 procedure TFigur.BildLaden();
 begin
@@ -65,9 +72,11 @@ procedure TFigur.ZuegeAnzeigen();
 var
   i: Integer;
   felder : TFields2DArrayZumUebergeben;
+  hervorgehobeneFelder : THervorgehobeneFelderArray;
 begin
 
   felder := FormMain.GetFields2D();
+  hervorgehobeneFelder := controller.GetHervorgehobeneFelder();
   ZuegeBerechnen();
 
   // vorher hervorgehobene ent-hervorheben
@@ -97,7 +106,8 @@ begin
 
   end;
 
-  //felder[1, 1].SetAusgewaehlteFigur(Self);
+  controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
+  controller.SetAusgewaehlteFigur(Self);
 
 end;
 
@@ -105,6 +115,16 @@ procedure TFigur.Click();
 begin
   inherited;
   ZuegeAnzeigen();
+end;
+
+procedure TFigur.SetAktuelleKoordinateX(p_x : integer);
+begin
+  aktuelleKoordinateX := p_x;
+end;
+
+procedure TFigur.SetAktuelleKoordinateY(p_y : integer);
+begin
+  aktuelleKoordinateY := p_y;
 end;
 
 function TFigur.GetAktuelleKoordinateX(): integer;
@@ -121,16 +141,6 @@ function TFigur.GetZuege() : TZweiDimensionaleArray;
 begin
   ZuegeBerechnen();
   result := legaleZuege;
-end;
-
-procedure TFigur.ZuegeBerechnen();
-begin
-
-  ShowMessage('Warum wird das ausgeführt?!');
-  // diese Form der Methode wird im regulaeren Programmbetrieb nicht aufgerufen,
-  // da Methode in den jeweiligen Kindern ueberschrieben wird, aber ich haette sie
-  // trotzdem gern hier, im Sinne der OOP
-
 end;
 
 end.

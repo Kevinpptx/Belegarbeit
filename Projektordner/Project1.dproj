@@ -110,6 +110,7 @@
         <DCCReference Include="UDame.pas"/>
         <DCCReference Include="UKoenig.pas"/>
         <DCCReference Include="UBauer.pas"/>
+        <DCCReference Include="UController.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

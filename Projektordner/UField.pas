@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, UFigur;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
 
 type
   TField = class(TShape)
@@ -12,13 +12,18 @@ type
     procedure FeldHervorheben();
     procedure FeldhervorhebungAufheben();
     procedure FieldMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure SetAusgewaehlteFigur(p_figur : TFigur);
+    //procedure SetAusgewaehlteFigur(p_figur : TFigur);
     constructor Create(AOwner: TComponent); override;
   private
-    class var ausgewaehlteFigur : TFigur;
+    //class var ausgewaehlteFigur : TFigur;
   end;
 
 implementation
+
+uses UController;
+
+var
+  controller : TController;
 
 { TField }
 
@@ -32,10 +37,10 @@ begin
 
 end;
 
-procedure TField.SetAusgewaehlteFigur(p_figur : TFigur);
+{procedure TField.SetAusgewaehlteFigur(p_figur : TFigur);
 begin
   ausgewaehlteFigur := p_figur;
-end;
+end;  }
 
 procedure TField.FeldHervorheben();
 begin
@@ -55,7 +60,7 @@ begin
 
   if (Pen.Color = clWebMediumAquamarine) then
   begin
-    ausgewaehlteFigur.aktuellePositionX := 1;
+    //controller.SetAusgewaehlteFigurPositionX(1);
   end;
 
 

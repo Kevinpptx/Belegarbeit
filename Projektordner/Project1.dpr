@@ -10,7 +10,8 @@ uses
   ULaeufer in 'ULaeufer.pas',
   UDame in 'UDame.pas',
   UKoenig in 'UKoenig.pas',
-  UBauer in 'UBauer.pas';
+  UBauer in 'UBauer.pas',
+  UController in 'UController.pas';
 
 {$R *.res}
 
