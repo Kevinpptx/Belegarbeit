@@ -16,6 +16,7 @@ type
     procedure SetAusgewaehlteFigurPosition(p_x, p_y : integer);
     procedure SetAusgewaehlteFigurPositionX(p_x : integer);
     procedure SetAusgewaehlteFigurPositionY(p_y : integer);
+    procedure SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray);
     function GetHervorgehobeneFelder() : THervorgehobeneFelderArray;
   private
     class var ausgewaehlteFigur : TFigur;
@@ -48,15 +49,30 @@ begin
   ausgewaehlteFigur.SetAktuelleKoordinateY(p_y);
 end;
 
+procedure TController.SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray);
+var
+  i: Integer;
+begin
+
+  for i := 1 to 27 do
+  begin
+    hervorgehobeneFelder[i] := p_hervorgehobeneFelder[i];
+  end;
+
+end;
+
 function TController.GetHervorgehobeneFelder() : THervorgehobeneFelderArray;
 var
   tempArray : THervorgehobeneFelderArray;
+  i : integer;
 begin
 
-  for i = 1 to 27 do
+  for i := 1 to 27 do
   begin
-    tempArray[1] := hervorgehobeneFelder;
+    tempArray[i] := hervorgehobeneFelder[i];
   end;
+
+  result := tempArray;
 
 end;
 

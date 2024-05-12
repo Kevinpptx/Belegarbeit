@@ -120,9 +120,8 @@ begin
   bauer7w := TBauer.Create(FormMain, true, 7, 7);
   bauer7w.Left := fields2D[7, 7].Left;
   bauer7w.Top := fields2D[7, 7].Top;
-  bauer7w.Name := 'hallo';
 
-  bauer8w := TBauer.Create(FormMain, true, 1, 8);
+  bauer8w := TBauer.Create(FormMain, true, 8, 7);
   bauer8w.Left := fields2D[7, 8].Left;
   bauer8w.Top := fields2D[7, 8].Top;
 
@@ -155,7 +154,7 @@ begin
   bauer7s.Left := fields2D[2, 7].Left;
   bauer7s.Top := fields2D[2, 7].Top;
 
-  bauer8s := TBauer.Create(FormMain, false, 1, 2);
+  bauer8s := TBauer.Create(FormMain, false, 8, 2);
   bauer8s.Left := fields2D[2, 8].Left;
   bauer8s.Top := fields2D[2, 8].Top;
 
@@ -230,70 +229,6 @@ begin
   koenigs := TKoenig.Create(FormMain, false, 5, 1);
   koenigs.Left := fields2D[1, 5].Left;
   koenigs.Top := fields2D[1, 5].Top;
-
-  // ab hier nur test
-
-  var test, test2, test3, test4, test5, test6 : TZweiDimensionaleArray;
-  test := bauer1w.GetZuege();
-  test2 := turm1w.GetZuege();
-  test3 := springer1w.GetZuege();
-  test4 := laeufer1w.GetZuege();
-  test5 := damew.GetZuege();
-  test6 := koenigw.GetZuege();
-
-  for i := 1 to 64 do
-  begin
-
-    if (test[i, 1] = 0) or (test[i, 2] = 0) then break;
-
-    //fields2D[test[i, 2], test[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test2[i, 1] = 0) and (test2[i, 2] = 0) then break;
-
-    //fields2D[test2[i, 2], test2[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test3[i, 1] = 0) and (test3[i, 2] = 0) then break;
-
-    //fields2D[test3[i, 2], test3[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test4[i, 1] = 0) and (test4[i, 2] = 0) then break;
-
-    //fields2D[test4[i, 2], test4[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test5[i, 1] = 0) and (test5[i, 2] = 0) then break;
-
-    //fields2D[test5[i, 2], test5[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test6[i, 1] = 0) and (test6[i, 2] = 0) then break;
-
-    //fields2D[test6[i, 2], test6[i, 1]].FeldHervorheben();
-
-  end;
 
 end;
 

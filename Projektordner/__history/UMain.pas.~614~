@@ -96,34 +96,42 @@ begin
   bauer1w := TBauer.Create(FormMain, true, 1, 7);
   bauer1w.Left := fields2D[7, 1].Left;
   bauer1w.Top := fields2D[7, 1].Top;
+  fields2D[7, 1].FigurZuweisen(bauer1w);
 
   bauer2w := TBauer.Create(FormMain, true, 2, 7);
   bauer2w.Left := fields2D[7, 2].Left;
   bauer2w.Top := fields2D[7, 2].Top;
+  fields2D[7, 2].FigurZuweisen(bauer2w);
 
   bauer3w := TBauer.Create(FormMain, true, 3, 7);
   bauer3w.Left := fields2D[7, 3].Left;
   bauer3w.Top := fields2D[7, 3].Top;
+  fields2D[7, 3].FigurZuweisen(bauer3w);
 
   bauer4w := TBauer.Create(FormMain, true, 4, 7);
   bauer4w.Left := fields2D[7, 4].Left;
   bauer4w.Top := fields2D[7, 4].Top;
+  fields2D[7, 4].FigurZuweisen(bauer4w);
 
   bauer5w := TBauer.Create(FormMain, true, 5, 7);
   bauer5w.Left := fields2D[7, 5].Left;
   bauer5w.Top := fields2D[7, 5].Top;
+  fields2D[7, 5].FigurZuweisen(bauer5w);
 
   bauer6w := TBauer.Create(FormMain, true, 6, 7);
   bauer6w.Left := fields2D[7, 6].Left;
   bauer6w.Top := fields2D[7, 6].Top;
+  fields2D[7, 6].FigurZuweisen(bauer6w);
 
   bauer7w := TBauer.Create(FormMain, true, 7, 7);
   bauer7w.Left := fields2D[7, 7].Left;
   bauer7w.Top := fields2D[7, 7].Top;
+  fields2D[7, 7].FigurZuweisen(bauer7w);
 
-  bauer8w := TBauer.Create(FormMain, true, 1, 8);
+  bauer8w := TBauer.Create(FormMain, true, 8, 7);
   bauer8w.Left := fields2D[7, 8].Left;
   bauer8w.Top := fields2D[7, 8].Top;
+  fields2D[7, 8].FigurZuweisen(bauer8w);
 
   // Bauern schwarz
   bauer1s := TBauer.Create(FormMain, false, 1, 2);
@@ -154,7 +162,7 @@ begin
   bauer7s.Left := fields2D[2, 7].Left;
   bauer7s.Top := fields2D[2, 7].Top;
 
-  bauer8s := TBauer.Create(FormMain, false, 1, 2);
+  bauer8s := TBauer.Create(FormMain, false, 8, 2);
   bauer8s.Left := fields2D[2, 8].Left;
   bauer8s.Top := fields2D[2, 8].Top;
 
@@ -229,70 +237,6 @@ begin
   koenigs := TKoenig.Create(FormMain, false, 5, 1);
   koenigs.Left := fields2D[1, 5].Left;
   koenigs.Top := fields2D[1, 5].Top;
-
-  // ab hier nur test
-
-  var test, test2, test3, test4, test5, test6 : TZweiDimensionaleArray;
-  test := bauer1w.GetZuege();
-  test2 := turm1w.GetZuege();
-  test3 := springer1w.GetZuege();
-  test4 := laeufer1w.GetZuege();
-  test5 := damew.GetZuege();
-  test6 := koenigw.GetZuege();
-
-  for i := 1 to 64 do
-  begin
-
-    if (test[i, 1] = 0) or (test[i, 2] = 0) then break;
-
-    //fields2D[test[i, 2], test[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test2[i, 1] = 0) and (test2[i, 2] = 0) then break;
-
-    //fields2D[test2[i, 2], test2[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test3[i, 1] = 0) and (test3[i, 2] = 0) then break;
-
-    //fields2D[test3[i, 2], test3[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test4[i, 1] = 0) and (test4[i, 2] = 0) then break;
-
-    //fields2D[test4[i, 2], test4[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test5[i, 1] = 0) and (test5[i, 2] = 0) then break;
-
-    //fields2D[test5[i, 2], test5[i, 1]].FeldHervorheben();
-
-  end;
-
-  for i := 1 to 64 do
-  begin
-
-    if (test6[i, 1] = 0) and (test6[i, 2] = 0) then break;
-
-    //fields2D[test6[i, 2], test6[i, 1]].FeldHervorheben();
-
-  end;
 
 end;
 

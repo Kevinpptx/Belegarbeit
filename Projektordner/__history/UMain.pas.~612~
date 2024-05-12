@@ -96,6 +96,7 @@ begin
   bauer1w := TBauer.Create(FormMain, true, 1, 7);
   bauer1w.Left := fields2D[7, 1].Left;
   bauer1w.Top := fields2D[7, 1].Top;
+  fields[7, 1].FigurZuweisen(bauer1w);
 
   bauer2w := TBauer.Create(FormMain, true, 2, 7);
   bauer2w.Left := fields2D[7, 2].Left;
@@ -120,9 +121,8 @@ begin
   bauer7w := TBauer.Create(FormMain, true, 7, 7);
   bauer7w.Left := fields2D[7, 7].Left;
   bauer7w.Top := fields2D[7, 7].Top;
-  bauer7w.Name := 'hallo';
 
-  bauer8w := TBauer.Create(FormMain, true, 1, 8);
+  bauer8w := TBauer.Create(FormMain, true, 8, 7);
   bauer8w.Left := fields2D[7, 8].Left;
   bauer8w.Top := fields2D[7, 8].Top;
 
@@ -155,7 +155,7 @@ begin
   bauer7s.Left := fields2D[2, 7].Left;
   bauer7s.Top := fields2D[2, 7].Top;
 
-  bauer8s := TBauer.Create(FormMain, false, 1, 2);
+  bauer8s := TBauer.Create(FormMain, false, 8, 2);
   bauer8s.Left := fields2D[2, 8].Left;
   bauer8s.Top := fields2D[2, 8].Top;
 

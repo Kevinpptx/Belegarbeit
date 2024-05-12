@@ -37,7 +37,7 @@ type
 
 implementation
 
-uses UMain, UController;
+uses UMain, UController, USpringer, UBauer, ULaeufer, UTurm, UKoenig, UDame, UField;
 
 var
   controller : TController;
@@ -93,21 +93,65 @@ begin
 
   end;
 
-
-  // Felder hervorheben
+  // Hervorgehobene Felder - Liste vorbereiten
   for i := 1 to 64 do
   begin
 
     if (legaleZuege[i, 1] = 0) or (legaleZuege[i, 2] = 0) then break;
 
+
     Inc(hervorgehoben);
-    felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
+    //if (hervorgehobeneFelder[hervorgehoben] = nil) then  continue;                                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+    //felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
     hervorgehobeneFelder[hervorgehoben] := felder[legaleZuege[i, 2], legaleZuege[i, 1]];
 
   end;
 
+  // Bevor wir sie wirklich an den Controller uebergeben noch checken, ob Figuren im Weg
+  var gecheckteFigur : TFigur;
+
+  if (self.ClassType = TBauer) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TSpringer) then
+  begin
+
+    for i := 1 to 27 do
+    begin
+
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.aktuelleKoordinateX <> 1234) then  // wenn eine Figur auf dem Feld steht (weil der Dummy, der uebergeben wird, wenn nix da steht X 1234 hat)
+        if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then  // wenn die Figur dieselbe Farbe hat
+          //hervorgehobeneFelder[i] := nil; // Ich darfs natuerlich nicht nil setzen                  AAAAAAAAAAAAAAAAAAAAAAAAAAA --->> gehört zusammen
+          ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+
+    end;
+
+  end
+  else if (self.ClassType = TLaeufer) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TTurm) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TKoenig) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TDame) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else raise Exception.Create('Das sollte nie passieren duerfen.');
+
   controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
   controller.SetAusgewaehlteFigur(Self);
+
 
 end;
 

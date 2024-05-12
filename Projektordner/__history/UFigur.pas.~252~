@@ -37,7 +37,10 @@ type
 
 implementation
 
-uses UMain, UController;
+uses UMain, UController, USpringer, UBauer, ULaeufer, UTurm, UKoenig, UDame, UField;
+
+var
+  controller : TController;
 
 procedure TFigur.BildLaden();
 begin
@@ -69,9 +72,11 @@ procedure TFigur.ZuegeAnzeigen();
 var
   i: Integer;
   felder : TFields2DArrayZumUebergeben;
+  hervorgehobeneFelder : THervorgehobeneFelderArray;
 begin
 
   felder := FormMain.GetFields2D();
+  hervorgehobeneFelder := controller.GetHervorgehobeneFelder();
   ZuegeBerechnen();
 
   // vorher hervorgehobene ent-hervorheben
@@ -80,28 +85,73 @@ begin
 
     for i := 1 to hervorgehoben do
     begin
-      //hervorgehobeneFelder[i].FeldhervorhebungAufheben();
-      //hervorgehobeneFelder[i] := nil;
+      hervorgehobeneFelder[i].FeldhervorhebungAufheben();
+      hervorgehobeneFelder[i] := nil;
     end;
 
     hervorgehoben := 0;
 
   end;
 
-
-  // Felder hervorheben
+  // Hervorgehobene Felder - Liste vorbereiten
   for i := 1 to 64 do
   begin
 
     if (legaleZuege[i, 1] = 0) or (legaleZuege[i, 2] = 0) then break;
 
+
     Inc(hervorgehoben);
-    felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
-    //hervorgehobeneFelder[hervorgehoben] := felder[legaleZuege[i, 2], legaleZuege[i, 1]];
+    //if (hervorgehobeneFelder[hervorgehoben] = nil) then  continue;                                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+    //felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
+    hervorgehobeneFelder[hervorgehoben] := felder[legaleZuege[i, 2], legaleZuege[i, 1]];
 
   end;
 
-  //felder[1, 1].SetAusgewaehlteFigur(Self);
+  // Bevor wir sie wirklich an den Controller uebergeben noch checken, ob Figuren im Weg
+  var gecheckteFigur : Variant;  // manchmal nil, manchmal TFigur
+
+  if (self.ClassType = TBauer) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TSpringer) then
+  begin
+
+    for i := 1 to 27 do
+    begin
+
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur <> nil) then
+        if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then
+          //hervorgehobeneFelder[i] := nil; // Ich darfs natuerlich nicht nil setzen                  AAAAAAAAAAAAAAAAAAAAAAAAAAA --->> gehört zusammen
+          ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!')
+
+    end;
+
+  end
+  else if (self.ClassType = TLaeufer) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TTurm) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TKoenig) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else if (self.ClassType = TDame) then
+  begin
+    raise Exception.Create('Nicht implementiert.');
+  end
+  else raise Exception.Create('Das sollte nie passieren duerfen.');
+
+  controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
+  controller.SetAusgewaehlteFigur(Self);
+
 
 end;
 
