@@ -21,7 +21,7 @@ type
 
 implementation
 
-uses UController;
+uses UController, UMain;
 
 var
   controller : TController;
@@ -70,12 +70,22 @@ begin
 end;
 
 function TField.GetZugewieseneFigur() : TFigur;
+var dummy : TFigur;
+var istWeiss : true;
 begin
 
-  if (zugewieseneFigur = nil) then ShowMessage('bazinga');
-  
+  if (zugewieseneFigur = nil) then
+  begin
 
-  // Achtung: nil moeglich!
+    // Den Dummy das Gegenteil der Farbe der eigenen Figur setzen, damit der Feldwechsel definitiv stattfinden kann
+    if (controller.GetAusgewaehlteFigur().GetIstWeiss()) then istWeiss := false;
+
+    dummy := TFigur.Create(FormMain, istWeiss, 1234, 1234);
+
+    result := dummy;
+    exit;
+  end;
+
   result := zugewieseneFigur;
 end;
 

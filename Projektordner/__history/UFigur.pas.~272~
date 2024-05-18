@@ -66,6 +66,9 @@ begin
   Parent := p_Form;
   hervorgehoben := 0;
 
+  if (controller = nil) then
+    controller := TController.Create();
+
 end;
 
 procedure TFigur.ZuegeAnzeigen();
@@ -123,10 +126,23 @@ begin
 
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-      if (gecheckteFigur.Name <> 'keine Figur') then  // wenn eine Figur auf dem Feld steht
-        if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then  // wenn die Figur dieselbe Farbe hat
+      //if (gecheckteFigur.aktuelleKoordinateX <> 1234) then  // wenn eine Figur auf dem Feld steht (weil der Dummy, der uebergeben wird, wenn nix da steht X 1234 hat)
+        //if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then  // wenn die Figur dieselbe Farbe hat
+        //if (gecheckteFigur.istWeiss = self.istWeiss) then begin  // wenn die Figur dieselbe Farbe hat
           //hervorgehobeneFelder[i] := nil; // Ich darfs natuerlich nicht nil setzen                  AAAAAAAAAAAAAAAAAAAAAAAAAAA --->> gehört zusammen
-          ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+
+
+      if (gecheckteFigur = nil) then ShowMessage('PANIK1');
+      if (hervorgehobeneFelder[i] = nil) then ShowMessage('PANIK2');
+      //if (gecheckteFigur = nil) then ShowMessage('PANIK3');
+
+
+
+      if (gecheckteFigur.aktuelleKoordinateX <> 1234) or (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+      end
+      else ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen ist legal!');
 
     end;
 

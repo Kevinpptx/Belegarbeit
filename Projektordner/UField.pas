@@ -71,18 +71,21 @@ end;
 
 function TField.GetZugewieseneFigur() : TFigur;
 var dummy : TFigur;
+var istWeiss : boolean;
 begin
 
   if (zugewieseneFigur = nil) then
   begin
-    dummy := TFigur.Create(FormMain, true, 1234, 1234);
+
+    // Den Dummy das Gegenteil der Farbe der eigenen Figur setzen, damit der Feldwechsel definitiv stattfinden kann
+    if (controller.GetAusgewaehlteFigur().GetIstWeiss()) then istWeiss := false else istWeiss := true;
+
+    dummy := TFigur.Create(FormMain, istWeiss, 1234, 1234);
 
     result := dummy;
     exit;
   end;
-  
 
-  // Achtung: nil moeglich!
   result := zugewieseneFigur;
 end;
 

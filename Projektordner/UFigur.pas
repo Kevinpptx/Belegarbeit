@@ -29,6 +29,7 @@ type
     function GetAktuelleKoordinateX() : integer;
     function GetAktuelleKoordinateY() : integer;
     function GetZuege() : TZweiDimensionaleArray;
+    function GetIstWeiss() : boolean;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   private
     //class var hervorgehobeneFelder : array[1..27] of TField;
@@ -65,6 +66,9 @@ begin
   pfad := '';
   Parent := p_Form;
   hervorgehoben := 0;
+
+  if (controller = nil) then
+    controller := TController.Create();
 
 end;
 
@@ -121,12 +125,17 @@ begin
     for i := 1 to 27 do
     begin
 
+      // FEHLER IST: WENN i > WIRD ALS DIE MOEGLICHKEITEN KOMMT IRGENDWO EIN NULLT POINTER ALSO HIER ______  UEBERPRUEFEN, OB DIE LAENGE DER ZUEGE SCHON ERREICHT IST
+      // ODER i NICHT BIS 27 SONDERN BIS ZU EINER VARIABLEN ANZAHL MACHEN!!!!!!!
+
+      controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-      if (gecheckteFigur.aktuelleKoordinateX <> 1234) then  // wenn eine Figur auf dem Feld steht (weil der Dummy, der uebergeben wird, wenn nix da steht X 1234 hat)
-        if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then  // wenn die Figur dieselbe Farbe hat
-          //hervorgehobeneFelder[i] := nil; // Ich darfs natuerlich nicht nil setzen                  AAAAAAAAAAAAAAAAAAAAAAAAAAA --->> gehört zusammen
-          ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+      end
+      else ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen ist legal!');
 
     end;
 
@@ -150,8 +159,6 @@ begin
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
   controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
-  controller.SetAusgewaehlteFigur(Self);
-
 
 end;
 
@@ -185,6 +192,11 @@ function TFigur.GetZuege() : TZweiDimensionaleArray;
 begin
   ZuegeBerechnen();
   result := legaleZuege;
+end;
+
+function TFigur.GetIstWeiss(): Boolean;
+begin
+  result := istWeiss;
 end;
 
 end.
