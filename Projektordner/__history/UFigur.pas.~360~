@@ -282,71 +282,39 @@ begin
   end
   else if (self.ClassType = TDame) then
   begin
+  var ignorierenBisIndex: integer;
+  ignorierenBisIndex := 0;
 
-    var ignorierenBisIndex : integer;
+  for i := 1 to hervorgehoben do
+  begin
+    if (hervorgehobeneFelder[i] = nil) then break;
 
-    ignorierenBisIndex := 0;
+    controller.SetAusgewaehlteFigur(self);
+    gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-    for i := 1 to hervorgehoben do
+    if (gecheckteFigur <> nil) and (gecheckteFigur.istWeiss = self.istWeiss) then
     begin
-
-      controller.SetAusgewaehlteFigur(self);
-      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
-
-      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      // illegal, weitere Felder in dieser Richtung ignorieren
+      ignorierenBisIndex := i;
+    end
+    else
+    begin
+      // legal
+      if not (i <= ignorierenBisIndex) then
       begin
-        // illegal
-
-
-        // die Variablennamen heissen foo davor, weil Delphi Speicherprobleme hat, wenn ich den selben Namen wir vorher verwende
-        var foonameAktuellesFeld : string;
-        var foospalteAktuellesFeld : char;
-        var fooreiheAktuellesFeld, checkIndex : integer;
-
-        foonameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
-        foospalteAktuellesFeld := foonameAktuellesFeld[1];
-        fooreiheAktuellesFeld := strtoint(foonameAktuellesFeld[2]);
-
-        checkIndex := i + 1;
-
-        while (hervorgehobeneFelder[checkIndex].Name[1] = foospalteAktuellesFeld) do
-        begin
-
-          ignorierenBisIndex := checkIndex;
-          Inc(checkIndex);
-
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
-
-        checkIndex := i + 1;
-
-        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = fooreiheAktuellesFeld) do
-        begin
-
-          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
-
-          Inc(checkIndex);
-
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
-      end
-      else
-      begin
-        // legal
-        if not (i <= ignorierenBisIndex) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
       end;
-
+      if (gecheckteFigur <> nil) then
+      begin
+        // Blockiert durch gegnerische Figur, weitere Felder in dieser Richtung ignorieren
+        ignorierenBisIndex := i;
+      end;
     end;
+  end;
+end
 
-  end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
   controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);

@@ -51,25 +51,13 @@ begin
     begin
       case i of
         1:
-          begin
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j; // nach rechts
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY;
-          end;
+          moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j; // nach rechts
         2:
-          begin
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j; // nach links
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY;
-          end;
+          moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j; // nach links
         3:
-          begin
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX;
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j; // nach unten
-          end;
+          moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j; // nach unten
         4:
-          begin
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX;
-            moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j; // nach oben
-          end;
+          moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j; // nach oben
         5:
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j; // nach rechts unten
@@ -91,6 +79,7 @@ begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;
           end;
       end;
+
       Inc(moeglichkeitNummer);
     end;
   end;

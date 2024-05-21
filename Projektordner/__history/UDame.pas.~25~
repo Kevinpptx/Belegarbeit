@@ -135,5 +135,4 @@ begin
   legaleZuege := moeglichkeitenTatsaechlich;
 end;
 
-
 end.

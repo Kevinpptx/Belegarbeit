@@ -280,71 +280,74 @@ begin
     end;
 
   end
-    else if (self.ClassType = TDame) then
+  else if (self.ClassType = TDame) then
+begin
+  var ignorierenBisIndex: integer;
+  ignorierenBisIndex := 0;
+  var letzteRichtung: string := '';
+  for i := 1 to hervorgehoben do
   begin
+    if (hervorgehobeneFelder[i] = nil) then break;
 
-    var ignorierenBisIndex : integer;
+    controller.SetAusgewaehlteFigur(self);
+    gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-    ignorierenBisIndex := 0;
-
-    for i := 1 to hervorgehoben do
+    // Richtung der Bewegung ermitteln
+    var aktuelleRichtung: string;
+    if (hervorgehobeneFelder[i].Left > self.Left) then
     begin
-
-      controller.SetAusgewaehlteFigur(self);
-      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
-
-      if (gecheckteFigur.istWeiss = self.istWeiss) then
-      begin
-        // illegal
-
-        var nameAktuellesFeld : string;
-        var spalteAktuellesFeld : char;
-        var reiheAktuellesFeld, checkIndex : integer;
-
-        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
-        spalteAktuellesFeld := nameAktuellesFeld[1];
-        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
-
-        checkIndex := i + 1;
-
-        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
-        begin
-
-          ignorierenBisIndex := checkIndex;
-          Inc(checkIndex);
-
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
-
-        checkIndex := i + 1;
-
-        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
-        begin
-
-          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
-
-          Inc(checkIndex);
-
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
-      end
+      if (hervorgehobeneFelder[i].Top > self.Top) then
+        aktuelleRichtung := 'untenRechts'
+      else if (hervorgehobeneFelder[i].Top < self.Top) then
+        aktuelleRichtung := 'obenRechts'
       else
-      begin
-        // legal
-        if not (i <= ignorierenBisIndex) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-
-      end;
-
+        aktuelleRichtung := 'rechts';
+    end
+    else if (hervorgehobeneFelder[i].Left < self.Left) then
+    begin
+      if (hervorgehobeneFelder[i].Top > self.Top) then
+        aktuelleRichtung := 'untenLinks'
+      else if (hervorgehobeneFelder[i].Top < self.Top) then
+        aktuelleRichtung := 'obenLinks'
+      else
+        aktuelleRichtung := 'links';
+    end
+    else
+    begin
+      if (hervorgehobeneFelder[i].Top > self.Top) then
+        aktuelleRichtung := 'unten'
+      else
+        aktuelleRichtung := 'oben';
     end;
 
-  end
+    // Überprüfen, ob Blockierung vorliegt und ggf. ignorieren
+    if (letzteRichtung <> '') and (letzteRichtung <> aktuelleRichtung) then
+      ignorierenBisIndex := 0; // Richtung gewechselt, Ignorierung zurücksetzen
+
+    if (gecheckteFigur <> nil) and (gecheckteFigur.istWeiss = self.istWeiss) then
+    begin
+      // illegal, weitere Felder in dieser Richtung ignorieren
+      ignorierenBisIndex := i;
+      letzteRichtung := aktuelleRichtung;
+    end
+    else
+    begin
+      // legal
+      if not (i <= ignorierenBisIndex) then
+      begin
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
+      end;
+      if (gecheckteFigur <> nil) then
+      begin
+        // Blockiert durch gegnerische Figur, weitere Felder in dieser Richtung ignorieren
+        ignorierenBisIndex := i;
+        letzteRichtung := aktuelleRichtung;
+      end;
+    end;
+  end;
+end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
   controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);
