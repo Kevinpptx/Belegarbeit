@@ -280,13 +280,15 @@ begin
     end;
 
   end
-  else if (self.ClassType = TDame) then
+    else if (self.ClassType = TDame) then
   begin
+
+    var ignorierenBisIndex : integer;
+
+    ignorierenBisIndex := 0;
 
     for i := 1 to hervorgehoben do
     begin
-
-      if (hervorgehobeneFelder[i] = nil) then break;
 
       controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
@@ -294,16 +296,55 @@ begin
       if (gecheckteFigur.istWeiss = self.istWeiss) then
       begin
         // illegal
+
+        var nameAktuellesFeld : string;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
+
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
+
+        checkIndex := i + 1;
+
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
+        begin
+
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+
+        checkIndex := i + 1;
+
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
+
+          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
+
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
       end
       else
       begin
         // legal
-        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-        Inc(indexLegalerZuege);
-        Inc(anzahlLegalerZuege);
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);
+        end;
+
       end;
 
     end;
+
+    ShowMessage('a');
 
   end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
