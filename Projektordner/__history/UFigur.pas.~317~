@@ -138,10 +138,6 @@ begin
   else if (self.ClassType = TTurm) then
   begin
 
-    var ignorierenBisIndex : integer;
-
-    ignorierenBisIndex := 0;
-
     for i := 1 to hervorgehoben do
     begin
 
@@ -153,50 +149,26 @@ begin
         // illegal
 
         var nameAktuellesFeld : string;
-        var stopp : boolean;
-        var spalteAktuellesFeld : char;
-        var reiheAktuellesFeld, checkIndex : integer;
 
         nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
-        spalteAktuellesFeld := nameAktuellesFeld[1];
-        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
 
-        checkIndex := i + 1;
+//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
+//        begin
+//
+//          var loeschIndex : integer;
+//
+//          // repeat loeschen until nicht mehr die reihe
+//
+//        end;
 
-        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
-        begin
-          
-          ignorierenBisIndex := checkIndex;
-          Inc(checkIndex);
 
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
-
-        checkIndex := i + 1;
-        
-        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
-        begin
-
-          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
-          
-          Inc(checkIndex);
-
-          if (checkIndex > hervorgehoben) then break;
-
-        end;
       end
       else
       begin
         // legal
-
-        if not (i <= ignorierenBisIndex) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);  
-        end;
-      
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
       end;
 
     end;

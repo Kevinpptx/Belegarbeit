@@ -12,12 +12,6 @@ type
   TZweiDimensionaleArray = array[1..64, 1..2] of Integer;
 
 type
-  TRichtung = record
-    dx, dy: Integer;
-  end;
-
-
-type
   TFigur = class abstract(TImage)
   protected
     pfad : string;
@@ -77,20 +71,11 @@ begin
 
 end;
 
-const
-richtungen: array[1..4] of TRichtung = (
-    (dx: 1; dy: 1),  // Diagonal nach rechts unten
-    (dx: 1; dy: -1), // Diagonal nach rechts oben
-    (dx: -1; dy: 1), // Diagonal nach links unten
-    (dx: -1; dy: -1) // Diagonal nach links oben
-  );
-
 procedure TFigur.ZuegeAnzeigen();
 var
   i, anzahlLegalerZuege, indexLegalerZuege: Integer;
-  felder: TFields2DArrayZumUebergeben;
-  hervorgehobeneFelder, legaleFelderFinal: THervorgehobeneFelderArray;
-  gecheckteFigur: TFigur;
+  felder : TFields2DArrayZumUebergeben;
+  hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
 begin
 
   indexLegalerZuege := 1;
@@ -114,6 +99,7 @@ begin
   end;
 
   // Bevor wir sie wirklich an den Controller uebergeben noch checken, ob Figuren im Weg
+  var gecheckteFigur : TFigur;
 
   if (self.ClassType = TBauer) then
   begin
@@ -147,54 +133,11 @@ begin
   end
   else if (self.ClassType = TLaeufer) then
   begin
-  
-    var
-      x, y, j: Integer;
-      feld: TField;
-
-    for j := Low(richtungen) to High(richtungen) do
-    begin
-      x := aktuelleKoordinateX;
-      y := aktuelleKoordinateY;
-
-      while True do
-      begin
-        Inc(x, richtungen[j].dx);
-        Inc(y, richtungen[j].dy);
-
-        if (x < 1) or (x > 8) or (y < 1) or (y > 8) then
-          Break; // Auﬂerhalb des Bretts
-
-        feld := felder[y, x];
-        if feld = nil then
-          Break; // Fehlerhafte Feldreferenz
-
-        gecheckteFigur := feld.GetZugewieseneFigur();
-
-        if gecheckteFigur = nil then
-        begin
-          // Kein Hindernis, Feld ist legal
-          legaleFelderFinal[indexLegalerZuege] := feld;
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end
-        else
-        begin
-          // Es gibt eine Figur auf dem Feld
-          if gecheckteFigur.istWeiss <> self.istWeiss then
-          begin
-            // Gegnerische Figur, Feld ist legal
-            legaleFelderFinal[indexLegalerZuege] := feld;
-            Inc(indexLegalerZuege);
-            Inc(anzahlLegalerZuege);
-          end;
-          Break; // Eigene Figur oder Gegnerische Figur blockiert den Weg
-        end;
-      end;
-    end;
+    raise Exception.Create('Nicht implementiert.');
   end
   else if (self.ClassType = TTurm) then
   begin
+
     var ignorierenBisIndex : integer;
 
     ignorierenBisIndex := 0;
