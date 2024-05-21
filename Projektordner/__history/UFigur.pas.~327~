@@ -12,6 +12,12 @@ type
   TZweiDimensionaleArray = array[1..64, 1..2] of Integer;
 
 type
+  TRichtung = record
+    dx, dy: Integer;
+  end;
+
+
+type
   TFigur = class abstract(TImage)
   protected
     pfad : string;
@@ -132,11 +138,73 @@ begin
 
   end
   else if (self.ClassType = TLaeufer) then
+begin
+  type
+    TRichtung = record
+      dx, dy: Integer;
+    end;
+  const
+    richtungen: array[1..4] of TRichtung = (
+      (dx: 1; dy: 1),  // Diagonal nach rechts unten
+      (dx: 1; dy: -1), // Diagonal nach rechts oben
+      (dx: -1; dy: 1), // Diagonal nach links unten
+      (dx: -1; dy: -1) // Diagonal nach links oben
+    );
+
+  var
+    x, y, i: Integer;
+    feld: TField;
+    gecheckteFigur: TFigur;
+
+  for i := Low(richtungen) to High(richtungen) do
   begin
-    raise Exception.Create('Nicht implementiert.');
-  end
+    x := aktuelleKoordinateX;
+    y := aktuelleKoordinateY;
+
+    while True do
+    begin
+      Inc(x, richtungen[i].dx);
+      Inc(y, richtungen[i].dy);
+
+      if (x < 1) or (x > 8) or (y < 1) or (y > 8) then
+        Break; // Auﬂerhalb des Bretts
+
+      feld := felder[y, x];
+      if feld = nil then
+        Break; // Fehlerhafte Feldreferenz
+
+      gecheckteFigur := feld.GetZugewieseneFigur();
+
+      if gecheckteFigur = nil then
+      begin
+        // Kein Hindernis, Feld ist legal
+        legaleFelderFinal[indexLegalerZuege] := feld;
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
+      end
+      else
+      begin
+        // Es gibt eine Figur auf dem Feld
+        if gecheckteFigur.istWeiss <> self.istWeiss then
+        begin
+          // Gegnerische Figur, Feld ist legal
+          legaleFelderFinal[indexLegalerZuege] := feld;
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);
+        end;
+        Break; // Eigene Figur oder Gegnerische Figur blockiert den Weg
+      end;
+    end;
+  end;
+end
+
+
   else if (self.ClassType = TTurm) then
   begin
+
+    var ignorierenBisIndex : integer;
+
+    ignorierenBisIndex := 0;
 
     for i := 1 to hervorgehoben do
     begin
@@ -149,26 +217,50 @@ begin
         // illegal
 
         var nameAktuellesFeld : string;
+        var stopp : boolean;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
 
-        nameAktuellesFeld := controller.
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
 
-//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
-//        begin
-//
-//          var loeschIndex : integer;
-//
-//          // repeat loeschen until nicht mehr die reihe
-//
-//        end;
+        checkIndex := i + 1;
 
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
+        begin
+          
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
 
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+
+        checkIndex := i + 1;
+        
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
+
+          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
+          
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
       end
       else
       begin
         // legal
-        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-        Inc(indexLegalerZuege);
-        Inc(anzahlLegalerZuege);
+
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);  
+        end;
+      
       end;
 
     end;
