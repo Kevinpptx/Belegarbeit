@@ -10,25 +10,26 @@ type
   TSpringer = class(TFigur)
   public
     procedure ZuegeBerechnen(); override;
-    constructor Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+    constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   end;
 
 implementation
 
 { TSpringer }
 
-// gibt eine Liste der legalen Springerzuege im fields2D Array zurück
-constructor TSpringer.Create(p_istWeiss: boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY: integer);
+constructor TSpringer.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
 begin
-  inherited Create(p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
+
+  inherited Create(p_Form, p_istWeiss, p_aktuelleKoordinateX, p_aktuelleKoordinateY);
 
   if (p_istWeiss) then pfad := 'springer-w.png' else pfad := 'springer-s.png';
+  BildLaden();
 
 end;
 
+// gibt eine Liste der legalen Springerzuege im fields2D Array zurueck
 procedure TSpringer.ZuegeBerechnen();
 var
-  moeglichkeit : array[1..2] of integer;
   moeglichkeitenTheoretisch : array[1..64, 1..2] of integer;
   moeglichkeitenTatsaechlich : TZweiDimensionaleArray;
   i, hinzugefuegteZuege: Integer;
@@ -49,6 +50,15 @@ begin
    -2   -1
 
   }
+
+    // das muss hier sein sonst kommen ganz komische Sachen raus
+    for i := 1 to 64 do
+    begin
+      moeglichkeitenTheoretisch[i, 1] := 0;
+      moeglichkeitenTheoretisch[i, 2] := 0;
+      moeglichkeitenTatsaechlich[i, 1] := 0;
+      moeglichkeitenTatsaechlich[i, 2] := 0;
+    end;
 
     // Moeglichkeit 1, Koordinate X
     moeglichkeitenTheoretisch[1, 1] := aktuelleKoordinateX + 1;
@@ -75,16 +85,6 @@ begin
 
     moeglichkeitenTheoretisch[8, 1] := aktuelleKoordinateX - 2;
     moeglichkeitenTheoretisch[8, 2] := aktuelleKoordinateY - 1;
-
-    // Rest der Array mit 0, 0 fuellen, damit der Hauptcode, der immer durch
-    // alle 64 iteriert, weiss, dass da nichts mehr kommt
-    for i := 9 to 64 do
-    begin
-
-      moeglichkeitenTheoretisch[i, 1] := 0;
-      moeglichkeitenTheoretisch[i, 2] := 0;
-
-    end;
 
     // Manche Moeglichkeiten sind noch illegale Zuege, das Brett ist ja nicht
     // unbegrenzt, also werden jetzt Koordinaten ueber 8 und kleiner 0
@@ -125,7 +125,7 @@ begin
 
     end;
 
-    // und abschliessend alle nicht beutzten Felder der Array wieder mit 0, 0 füllen
+    // und abschliessend alle nicht benutzten Felder der Array wieder mit 0, 0 füllen
     for i := hinzugefuegteZuege + 1 to 64 do
     begin
 

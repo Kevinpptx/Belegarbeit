@@ -32,7 +32,6 @@ type
     function GetIstWeiss() : boolean;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   private
-    //class var hervorgehobeneFelder : array[1..27] of TField;
     class var hervorgehoben : integer;
   end;
 
@@ -74,28 +73,19 @@ end;
 
 procedure TFigur.ZuegeAnzeigen();
 var
-  i: Integer;
+  i, anzahlLegalerZuege, indexLegalerZuege: Integer;
   felder : TFields2DArrayZumUebergeben;
-  hervorgehobeneFelder : THervorgehobeneFelderArray;
+  hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
 begin
+
+  indexLegalerZuege := 1;
+  anzahlLegalerZuege := 0;
 
   felder := FormMain.GetFields2D();
   hervorgehobeneFelder := controller.GetHervorgehobeneFelder();
   ZuegeBerechnen();
 
-  // vorher hervorgehobene ent-hervorheben
-  if (hervorgehoben <> 0) then
-  begin
-
-    for i := 1 to hervorgehoben do
-    begin
-      hervorgehobeneFelder[i].FeldhervorhebungAufheben();
-      hervorgehobeneFelder[i] := nil;
-    end;
-
-    hervorgehoben := 0;
-
-  end;
+  hervorgehoben := 0;
 
   // Hervorgehobene Felder - Liste vorbereiten
   for i := 1 to 64 do
@@ -103,11 +93,7 @@ begin
 
     if (legaleZuege[i, 1] = 0) or (legaleZuege[i, 2] = 0) then break;
 
-
     Inc(hervorgehoben);
-    //if (hervorgehobeneFelder[hervorgehoben] = nil) then  continue;                                  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-    //felder[legaleZuege[i, 2], legaleZuege[i, 1]].FeldHervorheben();
     hervorgehobeneFelder[hervorgehoben] := felder[legaleZuege[i, 2], legaleZuege[i, 1]];
 
   end;
@@ -122,20 +108,25 @@ begin
   else if (self.ClassType = TSpringer) then
   begin
 
-    for i := 1 to 27 do
+    for i := 1 to hervorgehoben do
     begin
 
-      // FEHLER IST: WENN i > WIRD ALS DIE MOEGLICHKEITEN KOMMT IRGENDWO EIN NULLT POINTER ALSO HIER ______  UEBERPRUEFEN, OB DIE LAENGE DER ZUEGE SCHON ERREICHT IST
-      // ODER i NICHT BIS 27 SONDERN BIS ZU EINER VARIABLEN ANZAHL MACHEN!!!!!!!
+      if (hervorgehobeneFelder[i] = nil) then break;
 
       controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
       begin
-        ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+        // illegal
       end
-      else ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen ist legal!');
+      else
+      begin
+        // legal
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
+      end;
 
     end;
 
@@ -146,11 +137,91 @@ begin
   end
   else if (self.ClassType = TTurm) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+
+    var ignorierenBisIndex : integer;
+
+    ignorierenBisIndex := 0;
+
+    for i := 1 to hervorgehoben do
+    begin
+
+      controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+
+        var nameAktuellesFeld : string;
+        var stopp : boolean;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
+
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
+
+        checkIndex := i + 1;
+
+        if (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) then
+        begin
+
+          repeat
+
+          // Alles mist, ab 163 nochmal neu
+
+            ignorierenBisIndex := i + 1;
+            stopp := true;
+
+          until (stopp);
+
+        end;
+
+//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
+//        begin
+//
+//          var loeschIndex : integer;
+//
+//          // repeat loeschen until nicht mehr die reihe
+//
+//        end;
+
+
+      end
+      else
+      begin
+        // legal
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
+      end;
+
+    end;
+
   end
   else if (self.ClassType = TKoenig) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+
+    for i := 1 to hervorgehoben do
+    begin
+
+      controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+      end
+      else
+      begin
+        // legal
+        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+        Inc(indexLegalerZuege);
+        Inc(anzahlLegalerZuege);
+      end;
+
+    end;
+
   end
   else if (self.ClassType = TDame) then
   begin
@@ -158,7 +229,7 @@ begin
   end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
-  controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
+  controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);
 
 end;
 

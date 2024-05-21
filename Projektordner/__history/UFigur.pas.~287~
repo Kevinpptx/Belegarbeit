@@ -29,9 +29,9 @@ type
     function GetAktuelleKoordinateX() : integer;
     function GetAktuelleKoordinateY() : integer;
     function GetZuege() : TZweiDimensionaleArray;
+    function GetIstWeiss() : boolean;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   private
-    //class var hervorgehobeneFelder : array[1..27] of TField;
     class var hervorgehoben : integer;
   end;
 
@@ -73,10 +73,12 @@ end;
 
 procedure TFigur.ZuegeAnzeigen();
 var
-  i: Integer;
+  i, indexLegalerZuege: Integer;
   felder : TFields2DArrayZumUebergeben;
-  hervorgehobeneFelder : THervorgehobeneFelderArray;
+  hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
 begin
+
+  indexLegalerZuege := 0;
 
   felder := FormMain.GetFields2D();
   hervorgehobeneFelder := controller.GetHervorgehobeneFelder();
@@ -124,14 +126,21 @@ begin
     for i := 1 to 27 do
     begin
 
+      if (hervorgehobeneFelder[i] = nil) then break;
+
+      controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-      if (gecheckteFigur.aktuelleKoordinateX <> 1234) then  // wenn eine Figur auf dem Feld steht (weil der Dummy, der uebergeben wird, wenn nix da steht X 1234 hat)
-        //if (gecheckteFigur.istWeiss = controller.GetAusgewaehlteFigur().istWeiss) then  // wenn die Figur dieselbe Farbe hat
-        if (gecheckteFigur.istWeiss = self.istWeiss) then begin  // wenn die Figur dieselbe Farbe hat
-          //hervorgehobeneFelder[i] := nil; // Ich darfs natuerlich nicht nil setzen                  AAAAAAAAAAAAAAAAAAAAAAAAAAA --->> gehört zusammen
-          ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!'); end
-          else ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere legal!');
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen waere illegal!');
+      end
+      else
+      begin
+       ShowMessage('Nach ' + hervorgehobeneFelder[i].Name + ' zu gehen ist legal!');
+       legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+       Inc(indexLegalerZuege);
+      end;
 
     end;
 
@@ -154,9 +163,7 @@ begin
   end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
-  controller.SetHervorgehobeneFelder(hervorgehobeneFelder);
-  controller.SetAusgewaehlteFigur(Self);
-
+  controller.SetHervorgehobeneFelder(legaleFelderFinal);
 
 end;
 
@@ -190,6 +197,11 @@ function TFigur.GetZuege() : TZweiDimensionaleArray;
 begin
   ZuegeBerechnen();
   result := legaleZuege;
+end;
+
+function TFigur.GetIstWeiss(): Boolean;
+begin
+  result := istWeiss;
 end;
 
 end.
