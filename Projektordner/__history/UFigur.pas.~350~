@@ -23,6 +23,7 @@ type
     procedure BildLaden();
     procedure ZuegeAnzeigen();
     procedure Click(); override;
+    function KategorisiereDiagonaleZuege() : TArray<Integer>; virtual;
   public
     procedure SetAktuelleKoordinateX(p_x : integer);
     procedure SetAktuelleKoordinateY(p_y : integer);
@@ -133,7 +134,62 @@ begin
   end
   else if (self.ClassType = TLaeufer) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+
+    var letzteIndexe : TArray<Integer>;
+    letzteIndexe := KategorisiereDiagonaleZuege();
+
+    var ignorierenBisIndex : integer;
+
+    for i := 1 to hervorgehoben do
+    begin
+
+      if (hervorgehobeneFelder[i] = nil) then break;
+
+      controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+
+        // gucken, was dieses (geblockte) Feld fuer ein Zugtyp (Oben rechts, unten rechts, usw.) waere, dann alle vom selben Typ ignorieren
+
+        if (letzteIndexe[0] <> 0) and (i <= letzteIndexe[0]) then
+        begin
+          //ShowMessage('Das Feld ' + hervorgehobeneFelder[i].Name + ' geht nach unten rechts');
+          ignorierenBisIndex := letzteIndexe[0];
+        end
+        else if (letzteIndexe[1] <> 0) and (i <= letzteIndexe[1]) then
+        begin
+          //ShowMessage('Das Feld ' + hervorgehobeneFelder[i].Name + ' geht nach oben rechts');
+          ignorierenBisIndex := letzteIndexe[1];
+        end
+        else if (letzteIndexe[2] <> 0) and (i <= letzteIndexe[2]) then
+        begin
+          //ShowMessage('Das Feld ' + hervorgehobeneFelder[i].Name + ' geht nach unten links');
+          ignorierenBisIndex := letzteIndexe[2];
+        end
+        else if (letzteIndexe[3] <> 0) and (i <= letzteIndexe[3]) then
+        begin
+          //ShowMessage('Das Feld ' + hervorgehobeneFelder[i].Name + ' geht nach oben links');
+          ignorierenBisIndex := letzteIndexe[3];
+        end;
+      end
+      else
+      begin
+        // legal
+
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);
+        end;
+
+      end;
+
+    end;
+
   end
   else if (self.ClassType = TTurm) then
   begin
@@ -153,7 +209,6 @@ begin
         // illegal
 
         var nameAktuellesFeld : string;
-        var stopp : boolean;
         var spalteAktuellesFeld : char;
         var reiheAktuellesFeld, checkIndex : integer;
 
@@ -165,7 +220,7 @@ begin
 
         while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
         begin
-          
+
           ignorierenBisIndex := checkIndex;
           Inc(checkIndex);
 
@@ -174,40 +229,28 @@ begin
         end;
 
         checkIndex := i + 1;
-        
+
         while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
         begin
 
           if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
-          
+
           Inc(checkIndex);
 
           if (checkIndex > hervorgehoben) then break;
 
         end;
-
-//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
-//        begin
-//
-//          var loeschIndex : integer;
-//
-//          // repeat loeschen until nicht mehr die reihe
-//
-//        end;
-
-
       end
       else
       begin
         // legal
-
         if not (i <= ignorierenBisIndex) then
         begin
           legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
           Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);  
+          Inc(anzahlLegalerZuege);
         end;
-      
+
       end;
 
     end;
@@ -237,9 +280,70 @@ begin
     end;
 
   end
-  else if (self.ClassType = TDame) then
+    else if (self.ClassType = TDame) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+
+    var ignorierenBisIndex : integer;
+
+    ignorierenBisIndex := 0;
+
+    for i := 1 to hervorgehoben do
+    begin
+
+      controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+
+        var nameAktuellesFeld : string;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
+
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
+
+        checkIndex := i + 1;
+
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
+        begin
+
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+
+        checkIndex := i + 1;
+
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
+
+          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
+
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+      end
+      else
+      begin
+        // legal
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);
+        end;
+
+      end;
+
+    end;
+
   end
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
@@ -282,6 +386,11 @@ end;
 function TFigur.GetIstWeiss(): Boolean;
 begin
   result := istWeiss;
+end;
+
+function TFigur.KategorisiereDiagonaleZuege() : TArray<Integer>;
+begin
+
 end;
 
 end.

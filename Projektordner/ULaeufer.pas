@@ -4,12 +4,13 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, UFigur;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, UFigur, UController;
 
 type
   TLaeufer = class(TFigur)
   public
     procedure ZuegeBerechnen(); override;
+    function KategorisiereDiagonaleZuege() : TArray<Integer>; override;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   end;
 
@@ -68,22 +69,22 @@ begin
 
       case i of
 
-        1:
+        1: // Rechts oben
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j;
           end;
-        2:
+        2: // Rechts unten
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX + j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;
           end;
-        3:
+        3: // Links oben
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY + j;
           end;
-        4:
+        4: // Links unten
           begin
             moeglichkeitenTheoretisch[moeglichkeitNummer, 1] := aktuelleKoordinateX - j;
             moeglichkeitenTheoretisch[moeglichkeitNummer, 2] := aktuelleKoordinateY - j;
@@ -147,6 +148,54 @@ begin
 
   legaleZuege := moeglichkeitenTatsaechlich;
 
+end;
+
+function TLaeufer.KategorisiereDiagonaleZuege(): TArray<Integer>;
+var
+  i: Integer;
+  xDiff, yDiff: Integer;
+  letzteIndexe: array[1..4] of Integer;
+begin
+  // Initialisiere die letzten Indexe mit 0
+  FillChar(letzteIndexe, SizeOf(letzteIndexe), 0);
+
+  for i := 1 to 64 do
+  begin
+    if (legaleZuege[i, 1] = 0) and (legaleZuege[i, 2] = 0) then
+      Break; // Keine legalen Zuege mehr
+
+    // Berechne die Differenzen zwischen den aktuellen Koordinaten und den Zielfeldkoordinaten
+    xDiff := legaleZuege[i, 1] - aktuelleKoordinateX;
+    yDiff := legaleZuege[i, 2] - aktuelleKoordinateY;
+
+    // Kategorisiere den Zug entsprechend der Richtung
+    if (xDiff > 0) and (yDiff > 0) then
+    begin
+      letzteIndexe[1] := i;
+    end
+    else if (xDiff > 0) and (yDiff < 0) then
+    begin
+      letzteIndexe[2] := i;
+    end
+    else if (xDiff < 0) and (yDiff > 0) then
+    begin
+      letzteIndexe[3] := i;
+    end
+    else if (xDiff < 0) and (yDiff < 0) then
+    begin
+      letzteIndexe[4] := i;
+    end;
+  end;
+
+  {
+    result:
+    Index 1 -> Der letzte Index der legaleZuege array, mit einem Zug, der nach unten rechts geht,
+    Index 2 -> Der letzte Index der legaleZuege array, mit einem Zug, der nach oben rechts geht,
+    Index 3 -> Der letzte Index der legaleZuege array, mit einem Zug, der nach unten links geht,
+    Index 4 -> Der letzte Index der legaleZuege array, mit einem Zug, der nach oben links geht
+  }
+
+   result := TArray<Integer>.Create(letzteIndexe[1], letzteIndexe[2], letzteIndexe[3], letzteIndexe[4]);
 end;
 
 end.
