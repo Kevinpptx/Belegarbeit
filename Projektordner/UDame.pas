@@ -10,12 +10,15 @@ type
   TDame = class(TFigur)
   public
     procedure ZuegeBerechnen(); override;
+    function KategorisiereDiagonaleZuege() : TArray<Integer>;
     constructor Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
   end;
 
 implementation
 
 { TDame }
+
+uses UController;
 
 constructor TDame.Create(p_Form : TForm; p_istWeiss : boolean; p_aktuelleKoordinateX, p_aktuelleKoordinateY : integer);
 begin
@@ -176,5 +179,42 @@ begin
   legaleZuege := moeglichkeitenTatsaechlich;
 
 end;
+
+function TDame.KategorisiereDiagonaleZuege(p_hervorgehoben : integer, p_hervorgehobeneFelder : THervorgehobeneFelderArray) : TArray<Integer>;
+var
+  letzteIndexe: TArray<Integer>;
+  i: Integer;
+begin
+  SetLength(letzteIndexe, 8);
+  for i := 0 to 7 do
+    letzteIndexe[i] := 0;
+
+  for i := 1 to p_hervorgehoben do
+  begin
+    if (p_hervorgehobeneFelder[i] = nil) then break;
+    var feldX := p_hervorgehobeneFelder[i].GetX();
+    var feldY := p_hervorgehobeneFelder[i].GetY();
+
+    if (feldX > aktuelleKoordinateX) and (feldY > aktuelleKoordinateY) then
+      letzteIndexe[0] := i // Diagonal oben rechts
+    else if (feldX > aktuelleKoordinateX) and (feldY < aktuelleKoordinateY) then
+      letzteIndexe[1] := i // Diagonal unten rechts
+    else if (feldX < aktuelleKoordinateX) and (feldY > aktuelleKoordinateY) then
+      letzteIndexe[2] := i // Diagonal oben links
+    else if (feldX < aktuelleKoordinateX) and (feldY < aktuelleKoordinateY) then
+      letzteIndexe[3] := i // Diagonal unten links
+    else if (feldX > aktuelleKoordinateX) and (feldY = aktuelleKoordinateY) then
+      letzteIndexe[4] := i // Horizontal rechts
+    else if (feldX < aktuelleKoordinateX) and (feldY = aktuelleKoordinateY) then
+      letzteIndexe[5] := i // Horizontal links
+    else if (feldX = aktuelleKoordinateX) and (feldY > aktuelleKoordinateY) then
+      letzteIndexe[6] := i // Vertikal oben
+    else if (feldX = aktuelleKoordinateX) and (feldY < aktuelleKoordinateY) then
+      letzteIndexe[7] := i // Vertikal unten
+  end;
+
+  Result := letzteIndexe;
+end;
+
 
 end.

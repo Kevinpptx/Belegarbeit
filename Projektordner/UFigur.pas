@@ -281,23 +281,73 @@ begin
 
   end
   else if (self.ClassType = TDame) then
+begin
+  var letzteIndexe : TArray<Integer>;
+  letzteIndexe := KategorisiereDiagonaleZuege();
+
+  var ignorierenBisIndex : integer;
+
+  for i := 1 to hervorgehoben do
   begin
 
-    for i := 1 to hervorgehoben do
+    if (hervorgehobeneFelder[i] = nil) then break;
+
+    controller.SetAusgewaehlteFigur(self);
+    gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+    if (gecheckteFigur.istWeiss = self.istWeiss) then
     begin
+      // illegal
 
-      if (hervorgehobeneFelder[i] = nil) then break;
+      // gucken, was dieses (geblockte) Feld fuer ein Zugtyp (oben, unten, rechts, links, diagonal) waere, dann alle vom selben Typ ignorieren
 
-      controller.SetAusgewaehlteFigur(self);
-      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
-
-      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      if (letzteIndexe[0] <> 0) and (i <= letzteIndexe[0]) then
       begin
-        // illegal
+        // Diagonal oben rechts
+        ignorierenBisIndex := letzteIndexe[0];
       end
-      else
+      else if (letzteIndexe[1] <> 0) and (i <= letzteIndexe[1]) then
       begin
-        // legal
+        // Diagonal unten rechts
+        ignorierenBisIndex := letzteIndexe[1];
+      end
+      else if (letzteIndexe[2] <> 0) and (i <= letzteIndexe[2]) then
+      begin
+        // Diagonal oben links
+        ignorierenBisIndex := letzteIndexe[2];
+      end
+      else if (letzteIndexe[3] <> 0) and (i <= letzteIndexe[3]) then
+      begin
+        // Diagonal unten links
+        ignorierenBisIndex := letzteIndexe[3];
+      end
+      else if (letzteIndexe[4] <> 0) and (i <= letzteIndexe[4]) then
+      begin
+        // Horizontal rechts
+        ignorierenBisIndex := letzteIndexe[4];
+      end
+      else if (letzteIndexe[5] <> 0) and (i <= letzteIndexe[5]) then
+      begin
+        // Horizontal links
+        ignorierenBisIndex := letzteIndexe[5];
+      end
+      else if (letzteIndexe[6] <> 0) and (i <= letzteIndexe[6]) then
+      begin
+        // Vertikal oben
+        ignorierenBisIndex := letzteIndexe[6];
+      end
+      else if (letzteIndexe[7] <> 0) and (i <= letzteIndexe[7]) then
+      begin
+        // Vertikal unten
+        ignorierenBisIndex := letzteIndexe[7];
+      end;
+    end
+    else
+    begin
+      // legal
+
+      if not (i <= ignorierenBisIndex) then
+      begin
         legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
         Inc(indexLegalerZuege);
         Inc(anzahlLegalerZuege);
@@ -305,7 +355,10 @@ begin
 
     end;
 
-  end
+  end;
+
+end
+
   else raise Exception.Create('Das sollte nie passieren duerfen.');
 
   controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);
