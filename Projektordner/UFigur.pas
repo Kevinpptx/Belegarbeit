@@ -163,37 +163,40 @@ begin
 
         checkIndex := i + 1;
 
-        if (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) then
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
         begin
+          
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
 
-          repeat
-
-          // Alles mist, ab 163 nochmal neu
-
-            ignorierenBisIndex := i + 1;
-            stopp := true;
-
-          until (stopp);
+          if (checkIndex > hervorgehoben) then break;
 
         end;
 
-//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
-//        begin
-//
-//          var loeschIndex : integer;
-//
-//          // repeat loeschen until nicht mehr die reihe
-//
-//        end;
+        checkIndex := i + 1;
+        
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
 
+          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
+          
+          Inc(checkIndex);
 
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
       end
       else
       begin
         // legal
-        legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-        Inc(indexLegalerZuege);
-        Inc(anzahlLegalerZuege);
+
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);  
+        end;
+      
       end;
 
     end;

@@ -85,7 +85,7 @@ begin
   hervorgehobeneFelder := controller.GetHervorgehobeneFelder();
   ZuegeBerechnen();
 
-    hervorgehoben := 0;
+  hervorgehoben := 0;
 
   // Hervorgehobene Felder - Liste vorbereiten
   for i := 1 to 64 do
@@ -100,8 +100,6 @@ begin
 
   // Bevor wir sie wirklich an den Controller uebergeben noch checken, ob Figuren im Weg
   var gecheckteFigur : TFigur;
-
-  // Der Code fuer jede Figur ist hier gleich, kann aber nicht in eine procedure ausgelagert werden, aufgrund von sonst auftretender zirkulärer Unit Referenz
 
   if (self.ClassType = TBauer) then
   begin
@@ -139,7 +137,78 @@ begin
   end
   else if (self.ClassType = TTurm) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+
+    var ignorierenBisIndex : integer;
+
+    ignorierenBisIndex := 0;
+
+    for i := 1 to hervorgehoben do
+    begin
+
+      controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+
+        var nameAktuellesFeld : string;
+        var stopp : boolean;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
+
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
+
+        checkIndex := i + 1;
+
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
+        begin
+
+          if (checkIndex > hervorgehoben) then break;
+          
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
+
+        end;
+
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
+
+          if (checkIndex > hervorgehoben) then break;
+
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
+
+        end;
+
+//        if (hervorgehobeneFelder[i + 1] = hervorgehobeneFelder[i]) and ((i + 1) <= hervorgehoben) then
+//        begin
+//
+//          var loeschIndex : integer;
+//
+//          // repeat loeschen until nicht mehr die reihe
+//
+//        end;
+
+
+      end
+      else
+      begin
+        // legal
+
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);  
+        end;
+      
+      end;
+
+    end;
+
   end
   else if (self.ClassType = TKoenig) then
   begin
