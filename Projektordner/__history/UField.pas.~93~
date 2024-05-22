@@ -54,13 +54,44 @@ end;
 
 procedure TField.FieldMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  ausgewaehlteFigur : TFigur;
+  feldIndex1, feldIndex2, i, j : integer;
+  felder : TFields2DArrayZumUebergeben;
 begin
 
-  if (Pen.Color = clWebMediumAquamarine) then
+  // Welches Feld aus der fields2D Array bin ich?
+  felder := FormMain.GetFields2D();
+
+  for i := 1 to 8 do
   begin
-    //controller.SetAusgewaehlteFigurPositionX(1);
+    for j := 1 to 8 do
+    begin
+      if (felder[i, j] = self) then
+      begin
+          feldIndex1 := i;
+          feldIndex2 := j;
+      end;
+    end;
   end;
 
+  // Klick-Logik
+  if (Pen.Color = clWebMediumAquamarine) then
+  begin
+
+    ausgewaehlteFigur := controller.GetAusgewaehlteFigur();
+
+    if (ausgewaehlteFigur <> nil) then
+    begin
+
+      ausgewaehlteFigur.SetAktuelleKoordinateX(feldIndex2);
+      ausgewaehlteFigur.SetAktuelleKoordinateY(feldIndex1);
+
+      controller.HervorgehobeneFelderZuruecksetzen();
+
+    end;
+
+  end;
 
 end;
 
@@ -71,15 +102,21 @@ end;
 
 function TField.GetZugewieseneFigur() : TFigur;
 var dummy : TFigur;
+var istWeiss : boolean;
 begin
 
   if (zugewieseneFigur = nil) then
   begin
-    dummy := TFigur.Create(FormMain, true, 1234, 1234);
-  end;
-  
 
-  // Achtung: nil moeglich!
+    // Den Dummy das Gegenteil der Farbe der eigenen Figur setzen, damit der Feldwechsel definitiv stattfinden kann
+    if (controller.GetAusgewaehlteFigur().GetIstWeiss()) then istWeiss := false else istWeiss := true;
+
+    dummy := TFigur.Create(FormMain, istWeiss, 1234, 1234);
+
+    result := dummy;
+    exit;
+  end;
+
   result := zugewieseneFigur;
 end;
 

@@ -16,7 +16,8 @@ type
     procedure SetAusgewaehlteFigurPosition(p_x, p_y : integer);
     procedure SetAusgewaehlteFigurPositionX(p_x : integer);
     procedure SetAusgewaehlteFigurPositionY(p_y : integer);
-    procedure SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray; zugAnzahl : integer);
+    procedure SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray; p_zugAnzahl : integer);
+    procedure HervorgehobeneFelderZuruecksetzen();
     function GetHervorgehobeneFelder() : THervorgehobeneFelderArray;
     function GetAusgewaehlteFigur() : TFigur;
   private
@@ -50,18 +51,18 @@ begin
   ausgewaehlteFigur.SetAktuelleKoordinateY(p_y);
 end;
 
-procedure TController.SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray; zugAnzahl : integer);
+procedure TController.SetHervorgehobeneFelder(p_hervorgehobeneFelder : THervorgehobeneFelderArray; p_zugAnzahl : integer);
 var
   i: Integer;
 begin
 
-  for i := 1 to zugAnzahl do
+  for i := 1 to p_zugAnzahl do
   begin
     if (hervorgehobeneFelder[i] = nil) then break;
     hervorgehobeneFelder[i].FeldhervorhebungAufheben();
   end;
 
-  for i := 1 to zugAnzahl do
+  for i := 1 to p_zugAnzahl do
   begin
     if (p_hervorgehobeneFelder[i] = nil) then break;
     hervorgehobeneFelder[i] := p_hervorgehobeneFelder[i];
@@ -90,5 +91,16 @@ begin
 
 end;
 
+
+procedure TController.HervorgehobeneFelderZuruecksetzen;
+var
+  i: Integer;
+begin
+  for i := 1 to 27 do
+  begin
+    if (hervorgehobeneFelder[i] = nil) then break;
+    hervorgehobeneFelder[i].FeldhervorhebungAufheben();
+  end;
+end;
 
 end.

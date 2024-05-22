@@ -54,13 +54,53 @@ end;
 
 procedure TField.FieldMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  ausgewaehlteFigur : TFigur;
+  vorherigesFeld : TField;
+  feldIndex1, feldIndex2, i, j : integer;
+  felder : TFields2DArrayZumUebergeben;
 begin
 
-  if (Pen.Color = clWebMediumAquamarine) then
+  // Welches Feld aus der fields2D Array bin ich?
+  felder := FormMain.GetFields2D();
+
+  for i := 1 to 8 do
   begin
-    //controller.SetAusgewaehlteFigurPositionX(1);
+    for j := 1 to 8 do
+    begin
+      if (felder[i, j] = self) then
+      begin
+          feldIndex1 := i;
+          feldIndex2 := j;
+      end;
+    end;
   end;
 
+  // Klick-Logik
+  if (Pen.Color = clWebMediumAquamarine) then
+  begin
+
+    ausgewaehlteFigur := controller.GetAusgewaehlteFigur();
+
+    if (ausgewaehlteFigur <> nil) then
+    begin
+
+      vorherigesFeld := felder[ausgewaehlteFigur.GetAktuelleKoordinateY, ausgewaehlteFigur.GetAktuelleKoordinateX];
+
+      ausgewaehlteFigur.SetAktuelleKoordinateX(feldIndex2);
+      ausgewaehlteFigur.SetAktuelleKoordinateY(feldIndex1);
+
+      controller.HervorgehobeneFelderZuruecksetzen();
+
+      self.zugewieseneFigur := vorherigesFeld.GetZugewieseneFigur();
+      vorherigesFeld.FigurZuweisen(nil);
+
+      zugewieseneFigur.Left := Left;
+      zugewieseneFigur.Top := Top;
+
+    end;
+
+  end;
 
 end;
 
