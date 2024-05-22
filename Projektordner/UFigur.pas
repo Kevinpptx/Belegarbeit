@@ -15,7 +15,7 @@ type
   TFigur = class abstract(TImage)
   protected
     pfad : string;
-    istWeiss : boolean;
+    istWeiss, ersterZug { ersterZug nur fuer Bauern wichtig } : boolean;
     legaleZuege : TZweiDimensionaleArray; // [MoeglichkeitNr][1 = X / 2 = Y (in fields2D)]
     aktuelleKoordinateX : integer; // gibt die Koordinate X der aktuellen Position in der fields2D Array zurück
     aktuelleKoordinateY : integer; // gibt die Koordinate Y der aktuellen Position in der fields2D Array zurück
@@ -61,6 +61,7 @@ begin
   inherited Create(p_Form);
 
   istWeiss := p_istWeiss;
+  ersterZug := true;
   aktuelleKoordinateX := p_aktuelleKoordinateX;
   aktuelleKoordinateY := p_aktuelleKoordinateY;
   pfad := '';
@@ -104,7 +105,149 @@ begin
 
   if (self.ClassType = TBauer) then
   begin
-    raise Exception.Create('Nicht implementiert.');
+    // Ich brauche, legaleFelderFinal (-> array[1..27] of TField) und anzahlLegalerZuege
+
+    controller.SetAusgewaehlteFigur(self);
+
+    anzahlLegalerZuege := 4;
+
+    var nichtPruefen : boolean;
+
+    nichtPruefen := false;
+
+    if (self.istWeiss) then
+    begin
+
+      // rechts schlagbar?
+      if (self.aktuelleKoordinateX + 1 <= 8) and (self.aktuelleKoordinateY - 1 >= 1) then
+      begin
+        if not(felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX + 1].GetZugewieseneFigur().istWeiss = self.istWeiss)
+        and not (felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX + 1].GetZugewieseneFigur().GetAktuelleKoordinateX = 1234) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX + 1];
+          Inc(indexLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // links schlagbar?
+      if (self.aktuelleKoordinateX - 1 >= 1) and (self.aktuelleKoordinateY - 1 >= 1) then
+      begin
+        if not(felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX - 1].GetZugewieseneFigur().istWeiss = self.istWeiss)
+        and not (felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX - 1].GetZugewieseneFigur().GetAktuelleKoordinateX = 1234) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[self.aktuelleKoordinateY - 1, self.aktuelleKoordinateX - 1];
+          Inc(indexLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // Figur im Weg bei 1 nach vorn?
+      if (aktuelleKoordinateY - 1 >= 1) then
+      begin
+        if not (felder[aktuelleKoordinateY - 1, aktuelleKoordinateX].GetZugewieseneFigur.istWeiss = self.istWeiss) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[aktuelleKoordinateY - 1, aktuelleKoordinateX];
+          Inc(indexLegalerZuege);
+        end
+        else
+        begin
+          Dec(anzahlLegalerZuege);
+          nichtPruefen := true;
+        end;
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // erster Zug (2 Felder darf er vor)? Figur im Weg bei 2 nach vorn?
+      if not (nichtPruefen) then
+      begin
+        if (ersterZug) then begin
+          if (aktuelleKoordinateY - 2 >= 1) then
+          begin
+            if not (felder[aktuelleKoordinateY - 2, aktuelleKoordinateX].GetZugewieseneFigur.istWeiss = self.istWeiss) then
+            begin
+              legaleFelderFinal[indexLegalerZuege] := felder[aktuelleKoordinateY - 2, aktuelleKoordinateX];
+              Inc(indexLegalerZuege);
+              ersterZug := false;
+            end
+            else Dec(anzahlLegalerZuege);
+          end
+          else Dec(anzahlLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+    end
+    else
+    begin
+
+      // links schlagbar?
+      if (self.aktuelleKoordinateX + 1 <= 8) and (self.aktuelleKoordinateY + 1 <= 8) then
+      begin
+        if not(felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX + 1].GetZugewieseneFigur().istWeiss = self.istWeiss)
+        and not(felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX + 1].GetZugewieseneFigur().GetAktuelleKoordinateX() = 1234) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX + 1];
+          Inc(indexLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // rechts schlagbar?
+      if (self.aktuelleKoordinateX - 1 >= 8) and (self.aktuelleKoordinateY + 1 <= 8) then
+      begin
+        if not(felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX - 1].GetZugewieseneFigur().istWeiss = self.istWeiss)
+        and not (felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX - 1].GetZugewieseneFigur().GetAktuelleKoordinateX() = 1234) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[self.aktuelleKoordinateY + 1, self.aktuelleKoordinateX - 1];
+          Inc(indexLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // Figur im Weg bei 1 nach vorn?
+      if (aktuelleKoordinateY + 1 <= 8) then
+      begin
+        if not (felder[aktuelleKoordinateY + 1, aktuelleKoordinateX].GetZugewieseneFigur.istWeiss = self.istWeiss) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := felder[aktuelleKoordinateY + 1, aktuelleKoordinateX];
+          Inc(indexLegalerZuege);
+        end
+        else
+        begin
+          Dec(anzahlLegalerZuege);
+          nichtPruefen := true;
+        end
+      end
+      else Dec(anzahlLegalerZuege);
+
+      // erster Zug (2 Felder darf er vor)? Figur im Weg bei 2 nach vorn?
+      if not (nichtPruefen) then
+      begin
+        if (ersterZug) then begin
+          if (aktuelleKoordinateY + 2 >= 1) then
+          begin
+            if not (felder[aktuelleKoordinateY + 2, aktuelleKoordinateX].GetZugewieseneFigur.istWeiss = self.istWeiss) then
+            begin
+              legaleFelderFinal[indexLegalerZuege] := felder[aktuelleKoordinateY + 2, aktuelleKoordinateX];
+              Inc(indexLegalerZuege);
+              ersterZug := false;
+            end
+            else Dec(anzahlLegalerZuege);
+          end
+          else Dec(anzahlLegalerZuege);
+        end
+        else Dec(anzahlLegalerZuege);
+      end
+      else Dec(anzahlLegalerZuege);
+
+    end;
+
   end
   else if (self.ClassType = TSpringer) then
   begin
@@ -288,7 +431,7 @@ begin
   aktuelleX := self.GetAktuelleKoordinateX();
   aktuelleY := self.GetAktuelleKoordinateY();
 
-  // Arrays zur Blockierung in jeder Richtung
+  // Variablen zur Blockierung in jeder Richtung
   var blockiertRechts, blockiertLinks, blockiertOben, blockiertUnten: boolean;
   var blockiertObenRechts, blockiertObenLinks, blockiertUntenRechts, blockiertUntenLinks: boolean;
 
@@ -444,7 +587,7 @@ begin
     end;
   end;
 end
-  else raise Exception.Create('Das sollte nie passieren duerfen.');
+  else raise Exception.Create('Das sollte nie passieren duerfen :(');
 
   controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);
 
