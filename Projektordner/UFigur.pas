@@ -75,10 +75,14 @@ end;
 
 procedure TFigur.ZuegeAnzeigen();
 var
-  i, anzahlLegalerZuege, indexLegalerZuege: Integer;
+  i, j, aktuelleX, aktuelleY, anzahlLegalerZuege, indexLegalerZuege: Integer;
   felder : TFields2DArrayZumUebergeben;
   hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
+  richtungen: array[1..8] of TPoint;
+  blockiert: array[1..8] of Boolean;
 begin
+
+  controller.HervorgehobeneFelderZuruecksetzen();
 
   indexLegalerZuege := 1;
   anzahlLegalerZuege := 0;
@@ -105,7 +109,6 @@ begin
 
   if (self.ClassType = TBauer) then
   begin
-    // Ich brauche, legaleFelderFinal (-> array[1..27] of TField) und anzahlLegalerZuege
 
     controller.SetAusgewaehlteFigur(self);
 
@@ -252,12 +255,14 @@ begin
   else if (self.ClassType = TSpringer) then
   begin
 
+    controller.SetAusgewaehlteFigur(self);
+
     for i := 1 to hervorgehoben do
     begin
 
       if (hervorgehobeneFelder[i] = nil) then break;
 
-      controller.SetAusgewaehlteFigur(self);
+      //controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
@@ -278,6 +283,8 @@ begin
   else if (self.ClassType = TLaeufer) then
   begin
 
+    controller.SetAusgewaehlteFigur(self);
+
     var letzteIndexe : TArray<Integer>;
     letzteIndexe := KategorisiereDiagonaleZuege();
 
@@ -288,7 +295,7 @@ begin
 
       if (hervorgehobeneFelder[i] = nil) then break;
 
-      controller.SetAusgewaehlteFigur(self);
+      //controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
@@ -337,6 +344,8 @@ begin
   else if (self.ClassType = TTurm) then
   begin
 
+    controller.SetAusgewaehlteFigur(self);
+
     var ignorierenBisIndex : integer;
 
     ignorierenBisIndex := 0;
@@ -344,7 +353,7 @@ begin
     for i := 1 to hervorgehoben do
     begin
 
-      controller.SetAusgewaehlteFigur(self);
+      //controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
@@ -402,10 +411,12 @@ begin
   else if (self.ClassType = TKoenig) then
   begin
 
+    controller.SetAusgewaehlteFigur(self);
+
     for i := 1 to hervorgehoben do
     begin
 
-      controller.SetAusgewaehlteFigur(self);
+      //controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
@@ -424,173 +435,65 @@ begin
 
   end
 else if (self.ClassType = TDame) then
-begin
-  felder := FormMain.GetFields2D();
-
-  var aktuelleX, aktuelleY: integer;
-  aktuelleX := self.GetAktuelleKoordinateX();
-  aktuelleY := self.GetAktuelleKoordinateY();
-
-  // Variablen zur Blockierung in jeder Richtung
-  var blockiertRechts, blockiertLinks, blockiertOben, blockiertUnten: boolean;
-  var blockiertObenRechts, blockiertObenLinks, blockiertUntenRechts, blockiertUntenLinks: boolean;
-
-  blockiertRechts := false;
-  blockiertLinks := false;
-  blockiertOben := false;
-  blockiertUnten := false;
-  blockiertObenRechts := false;
-  blockiertObenLinks := false;
-  blockiertUntenRechts := false;
-  blockiertUntenLinks := false;
-
-  for i := 1 to hervorgehoben do
   begin
-    if (hervorgehobeneFelder[i] = nil) then break;
-
-    var x, y: integer;
-    for y := 1 to 8 do
-      for x := 1 to 8 do
-        if felder[y, x] = hervorgehobeneFelder[i] then break;
 
     controller.SetAusgewaehlteFigur(self);
-    gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-    // Richtung der Bewegung ermitteln
-    if (x > aktuelleX) and (y = aktuelleY) then
+    aktuelleX := self.GetAktuelleKoordinateX();
+    aktuelleY := self.GetAktuelleKoordinateY();
+
+    richtungen[1] := Point(1, 0);   // Rechts
+    richtungen[2] := Point(-1, 0);  // Links
+    richtungen[3] := Point(0, 1);   // Unten
+    richtungen[4] := Point(0, -1);  // Oben
+    richtungen[5] := Point(1, 1);   // Unten rechts
+    richtungen[6] := Point(-1, 1);  // Unten links
+    richtungen[7] := Point(1, -1);  // Oben rechts
+    richtungen[8] := Point(-1, -1); // Oben links
+
+    for i := 1 to 8 do
+      blockiert[i] := False;
+
+    j := 1;
+    for var dist := 1 to 8 do
     begin
-      // Rechts
-      if not blockiertRechts then
+      for var k := 1 to 8 do
       begin
-        if (gecheckteFigur <> nil) then
-          blockiertRechts := true;
+        var x := aktuelleX + richtungen[k].X * dist;
+        var y := aktuelleY + richtungen[k].Y * dist;
 
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
+        if (x >= 1) and (x <= 8) and (y >= 1) and (y <= 8) and not blockiert[k] then
         begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x < aktuelleX) and (y = aktuelleY) then
-    begin
-      // Links
-      if not blockiertLinks then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertLinks := true;
+          gecheckteFigur := felder[y, x].GetZugewieseneFigur();
 
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x = aktuelleX) and (y > aktuelleY) then
-    begin
-      // Unten
-      if not blockiertUnten then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertUnten := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x = aktuelleX) and (y < aktuelleY) then
-    begin
-      // Oben
-      if not blockiertOben then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertOben := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x > aktuelleX) and (y > aktuelleY) then
-    begin
-      // Unten rechts
-      if not blockiertUntenRechts then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertUntenRechts := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x > aktuelleX) and (y < aktuelleY) then
-    begin
-      // Oben rechts
-      if not blockiertObenRechts then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertObenRechts := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x < aktuelleX) and (y > aktuelleY) then
-    begin
-      // Unten links
-      if not blockiertUntenLinks then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertUntenLinks := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
-        end;
-      end;
-    end
-    else if (x < aktuelleX) and (y < aktuelleY) then
-    begin
-      // Oben links
-      if not blockiertObenLinks then
-      begin
-        if (gecheckteFigur <> nil) then
-          blockiertObenLinks := true;
-
-        if (gecheckteFigur = nil) or (gecheckteFigur.istWeiss <> self.istWeiss) then
-        begin
-          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
-          Inc(indexLegalerZuege);
-          Inc(anzahlLegalerZuege);
+          if (gecheckteFigur.GetAktuelleKoordinateX() <> 1234) then
+          begin
+            if (gecheckteFigur.GetIstWeiss() = self.GetIstWeiss()) then
+            begin
+              blockiert[k] := True;
+            end
+            else
+            begin
+              legaleFelderFinal[j] := felder[y, x];
+              Inc(j);
+              blockiert[k] := True;
+            end;
+          end
+          else
+          begin
+            legaleFelderFinal[j] := felder[y, x];
+            Inc(j);
+          end;
         end;
       end;
     end;
+
+    // Hervorgehobene Felder an den Controller übergeben
+    controller.SetHervorgehobeneFelder(legaleFelderFinal, j - 1);
   end;
-end
-  else raise Exception.Create('Das sollte nie passieren duerfen :(');
 
-  controller.SetHervorgehobeneFelder(legaleFelderFinal, anzahlLegalerZuege);
-
+  // Hervorgehobene Felder an den Controller übergeben
+  controller.SetHervorgehobeneFelder(legaleFelderFinal, indexLegalerZuege - 1);
 end;
 
 procedure TFigur.Click();

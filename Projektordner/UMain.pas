@@ -75,6 +75,7 @@ end;
 procedure TFormMain.btDemonstrationClick(Sender: TObject);
 begin
   SpielZuruecksetzen();
+  btDemonstration.Enabled := false;
 end;
 
 procedure TFormMain.FormActivate(Sender: TObject);
