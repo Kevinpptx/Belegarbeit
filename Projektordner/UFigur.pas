@@ -66,7 +66,6 @@ begin
   aktuelleKoordinateY := p_aktuelleKoordinateY;
   pfad := '';
   Parent := p_Form;
-  hervorgehoben := 0;
 
   if (controller = nil) then
     controller := TController.Create();
@@ -75,7 +74,8 @@ end;
 
 procedure TFigur.ZuegeAnzeigen();
 var
-  i, j, aktuelleX, aktuelleY, anzahlLegalerZuege, indexLegalerZuege: Integer;
+  i, j, k, aktuelleX, aktuelleY, anzahlLegalerZuege, indexLegalerZuege, ignorierenBisIndex, zuletztGepruefteKoordinateX, zuletztGepruefteKoordinateY,
+  pruefKoordinateX, pruefKoordinateY: Integer;
   felder : TFields2DArrayZumUebergeben;
   hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
   richtungen: array[1..8] of TPoint;
@@ -288,7 +288,7 @@ begin
     var letzteIndexe : TArray<Integer>;
     letzteIndexe := KategorisiereDiagonaleZuege();
 
-    var ignorierenBisIndex : integer;
+    ignorierenBisIndex := 0;
 
     for i := 1 to hervorgehoben do
     begin
@@ -346,8 +346,6 @@ begin
 
     controller.SetAusgewaehlteFigur(self);
 
-    var ignorierenBisIndex : integer;
-
     ignorierenBisIndex := 0;
 
     for i := 1 to hervorgehoben do
@@ -355,6 +353,46 @@ begin
 
       //controller.SetAusgewaehlteFigur(self);
       gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
+
+      // Feld der Figur im fields2D-Array finden, um den FeldIndex (Koordinaten) zu kriegens
+      for j := 1 to 8 do
+        for k := 1 to 8 do
+          if (felder[j, k] = hervorgehobeneFelder[i]) then
+          begin
+            pruefKoordinateX := k;
+            pruefKoordinateY := j;
+            break;
+          end;
+
+      // In welche Richtung geht der Turm?
+      if (i <> 1) and (zuletztGepruefteKoordinateX <> pruefKoordinateX) and (zuletztGepruefteKoordinateY <> pruefKoordinateY) then
+      begin
+
+        if (zuletztGepruefteKoordinateX > aktuelleKoordinateX) and (zuletztGepruefteKoordinateY > aktuelleKoordinateY) then
+
+
+      end
+      else
+      if (i <> 1) and (zuletztGepruefteKoordinateX <> pruefKoordinateX) then
+      begin
+        if (zuletztGepruefteKoordinateX > pruefKoordinateX) then
+        begin
+          ShowMessage('Richtung: links' + ' mit i = ' + inttostr(i));
+        end
+        else if (zuletztGepruefteKoordinateX < pruefKoordinateX) then ShowMessage('Richtung: rechts' + ' mit i = ' + inttostr(i));
+      end
+      else
+      if (i <> 1) and (zuletztGepruefteKoordinateY <> pruefKoordinateY) then
+      begin
+        if (zuletztGepruefteKoordinateY > pruefKoordinateY) then
+        begin
+          ShowMessage('Richtung: oben' + ' mit i = ' + inttostr(i));
+        end
+        else if (zuletztGepruefteKoordinateY < pruefKoordinateY) then ShowMessage('Richtung: unten' + ' mit i = ' + inttostr(i));
+      end;
+
+      zuletztGepruefteKoordinateX := pruefKoordinateX;
+      zuletztGepruefteKoordinateY := pruefKoordinateY;
 
       if (gecheckteFigur.istWeiss = self.istWeiss) then
       begin
@@ -369,6 +407,10 @@ begin
         reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
 
         checkIndex := i + 1;
+
+        // unnoetige while-Durchlaeufe vermeiden
+        //if not (ignorierenBisIndex >= checkIndex) then
+        //begin
 
         while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
         begin
@@ -392,6 +434,9 @@ begin
           if (checkIndex > hervorgehoben) then break;
 
         end;
+
+        //end;
+
       end
       else
       begin
@@ -457,7 +502,7 @@ else if (self.ClassType = TDame) then
     j := 1;
     for var dist := 1 to 8 do
     begin
-      for var k := 1 to 8 do
+      for k := 1 to 8 do
       begin
         var x := aktuelleX + richtungen[k].X * dist;
         var y := aktuelleY + richtungen[k].Y * dist;

@@ -66,7 +66,6 @@ begin
   aktuelleKoordinateY := p_aktuelleKoordinateY;
   pfad := '';
   Parent := p_Form;
-  hervorgehoben := 0;
 
   if (controller = nil) then
     controller := TController.Create();
@@ -75,7 +74,8 @@ end;
 
 procedure TFigur.ZuegeAnzeigen();
 var
-  i, j, dist, aktuelleX, aktuelleY, anzahlLegalerZuege, indexLegalerZuege: Integer;
+  i, j, k, aktuelleX, aktuelleY, anzahlLegalerZuege, indexLegalerZuege, ignorierenBisIndex, zuletztGepruefteKoordinateX, zuletztGepruefteKoordinateY,
+  pruefKoordinateX, pruefKoordinateY: Integer;
   felder : TFields2DArrayZumUebergeben;
   hervorgehobeneFelder, legaleFelderFinal : THervorgehobeneFelderArray;
   richtungen: array[1..8] of TPoint;
@@ -288,7 +288,7 @@ begin
     var letzteIndexe : TArray<Integer>;
     letzteIndexe := KategorisiereDiagonaleZuege();
 
-    var ignorierenBisIndex : integer;
+    ignorierenBisIndex := 0;
 
     for i := 1 to hervorgehoben do
     begin
@@ -343,108 +343,106 @@ begin
   end
   else if (self.ClassType = TTurm) then
   begin
-    aktuelleX := self.GetAktuelleKoordinateX();
-    aktuelleY := self.GetAktuelleKoordinateY();
 
-    richtungen[1] := Point(1, 0);   // Rechts
-    richtungen[2] := Point(-1, 0);  // Links
-    richtungen[3] := Point(0, 1);   // Unten
-    richtungen[4] := Point(0, -1);  // Oben
+    controller.SetAusgewaehlteFigur(self);
 
-    for i := 1 to 4 do
-      blockiert[i] := False;
+    ignorierenBisIndex := 0;
 
-    j := 1;
-    for dist := 1 to 8 do
+    for i := 1 to hervorgehoben do
     begin
-      for i := 1 to 4 do
-      begin
-        var x := aktuelleX + richtungen[i].X * dist;
-        var y := aktuelleY + richtungen[i].Y * dist;
 
-        if (x >= 1) and (x <= 8) and (y >= 1) and (y <= 8) and not blockiert[i] then
-        begin
-          gecheckteFigur := felder[y, x].GetZugewieseneFigur();
+      //controller.SetAusgewaehlteFigur(self);
+      gecheckteFigur := hervorgehobeneFelder[i].GetZugewieseneFigur();
 
-          if (gecheckteFigur <> nil) and (gecheckteFigur.GetAktuelleKoordinateX() <> 1234) then
+      // Feld der Figur im fields2D-Array finden, um den FeldIndex (Koordinaten) zu kriegens
+      for j := 1 to 8 do
+        for k := 1 to 8 do
+          if (felder[j, k] = hervorgehobeneFelder[i]) then
           begin
-            if (gecheckteFigur.GetIstWeiss() = self.GetIstWeiss()) then
-            begin
-              blockiert[i] := True;
-            end
-            else
-            begin
-              legaleFelderFinal[j] := felder[y, x];
-              Inc(j);
-              blockiert[i] := True;
-            end;
-          end
-          else
-          begin
-            legaleFelderFinal[j] := felder[y, x];
-            Inc(j);
+            pruefKoordinateX := k;
+            pruefKoordinateY := j;
+            break;
           end;
-        end;
-      end;
-    end;
 
-    anzahlLegalerZuege := j - 1;
-
-
-  end
-  else if (self.ClassType = TDame) then
-  begin
-    aktuelleX := self.GetAktuelleKoordinateX();
-    aktuelleY := self.GetAktuelleKoordinateY();
-
-    richtungen[1] := Point(1, 0);   // Rechts
-    richtungen[2] := Point(-1, 0);  // Links
-    richtungen[3] := Point(0, 1);   // Unten
-    richtungen[4] := Point(0, -1);  // Oben
-    richtungen[5] := Point(1, 1);   // Unten rechts
-    richtungen[6] := Point(-1, 1);  // Unten links
-    richtungen[7] := Point(1, -1);  // Oben rechts
-    richtungen[8] := Point(-1, -1); // Oben links
-
-    for i := 1 to 8 do
-      blockiert[i] := False;
-
-    j := 1;
-    for dist := 1 to 8 do
-    begin
-      for var k := 1 to 8 do
+      // Dummy Figur hat 1234 als Koordinate deswegen geht nciht
+      if (i <> 1) and (zuletztGepruefteKoordinateX <> pruefKoordinateX) then
       begin
-        var x := aktuelleX + richtungen[k].X * dist;
-        var y := aktuelleY + richtungen[k].Y * dist;
-
-        if (x >= 1) and (x <= 8) and (y >= 1) and (y <= 8) and not blockiert[k] then
+        if (zuletztGepruefteKoordinateX < pruefKoordinateX) then
         begin
-          gecheckteFigur := felder[y, x].GetZugewieseneFigur();
-
-          if (gecheckteFigur.GetAktuelleKoordinateX() <> 1234) then
-          begin
-            if (gecheckteFigur.GetIstWeiss() = self.GetIstWeiss()) then
-            begin
-              blockiert[k] := True;
-            end
-            else
-            begin
-              legaleFelderFinal[j] := felder[y, x];
-              Inc(j);
-              blockiert[k] := True;
-            end;
-          end
-          else
-          begin
-            legaleFelderFinal[j] := felder[y, x];
-            Inc(j);
-          end;
-        end;
+          ShowMessage('Richtung: links' + ' mit i = ' + inttostr(i));
+        end
+        else if (zuletztGepruefteKoordinateX > pruefKoordinateX) then ShowMessage('Richtung: rechts' + ' mit i = ' + inttostr(i));
+      end
+      else
+      if (i <> 1) and (zuletztGepruefteKoordinateY <> pruefKoordinateY) then
+      begin
+        if (zuletztGepruefteKoordinateY < pruefKoordinateY) then
+        begin
+          ShowMessage('Richtung: oben' + ' mit i = ' + inttostr(i));
+        end
+        else if (zuletztGepruefteKoordinateY > pruefKoordinateY) then ShowMessage('Richtung: unten' + ' mit i = ' + inttostr(i));
       end;
+
+      zuletztGepruefteKoordinateX := gecheckteFigur.aktuelleKoordinateX;
+      zuletztGepruefteKoordinateY := gecheckteFigur.aktuelleKoordinateY;
+
+      if (gecheckteFigur.istWeiss = self.istWeiss) then
+      begin
+        // illegal
+
+        var nameAktuellesFeld : string;
+        var spalteAktuellesFeld : char;
+        var reiheAktuellesFeld, checkIndex : integer;
+
+        nameAktuellesFeld := felder[aktuelleKoordinateY, aktuelleKoordinateX].Name;
+        spalteAktuellesFeld := nameAktuellesFeld[1];
+        reiheAktuellesFeld := strtoint(nameAktuellesFeld[2]);
+
+        checkIndex := i + 1;
+
+        // unnoetige while-Durchlaeufe vermeiden
+        //if not (ignorierenBisIndex >= checkIndex) then
+        //begin
+
+        while (hervorgehobeneFelder[checkIndex].Name[1] = spalteAktuellesFeld) do
+        begin
+
+          ignorierenBisIndex := checkIndex;
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+
+        checkIndex := i + 1;
+
+        while (strtoint(hervorgehobeneFelder[checkIndex].Name[2]) = reiheAktuellesFeld) do
+        begin
+
+          if not (ignorierenBisIndex >= checkIndex) then ignorierenBisIndex := checkIndex;
+
+          Inc(checkIndex);
+
+          if (checkIndex > hervorgehoben) then break;
+
+        end;
+
+        //end;
+
+      end
+      else
+      begin
+        // legal
+        if not (i <= ignorierenBisIndex) then
+        begin
+          legaleFelderFinal[indexLegalerZuege] := hervorgehobeneFelder[i];
+          Inc(indexLegalerZuege);
+          Inc(anzahlLegalerZuege);
+        end;
+
+      end;
+
     end;
-
-    anzahlLegalerZuege := j - 1;
-
 
   end
   else if (self.ClassType = TKoenig) then
@@ -494,7 +492,7 @@ else if (self.ClassType = TDame) then
       blockiert[i] := False;
 
     j := 1;
-    for dist := 1 to 8 do
+    for var dist := 1 to 8 do
     begin
       for var k := 1 to 8 do
       begin
